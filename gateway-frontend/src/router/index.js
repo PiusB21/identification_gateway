@@ -5,6 +5,9 @@ import { createRouter, createWebHistory } from 'vue-router'
 import AdminLayout from '@/views/admin/adminLayout.vue'
 import DashboardView from '@/views/admin/DashboardView.vue'
 import InstitutionsView from '@/views/admin/InstitutionsView.vue'
+import ApiKeysView from '@/views/admin/ApiKeysView.vue'
+import ApiRequests from '@/views/admin/ApiRequests.vue'
+import CitizenData from '@/views/admin/CitizenData.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -42,9 +45,19 @@ const router = createRouter({
           component: InstitutionsView,
         },
         {
-          path: '/reports',
-          name: 'Reports',
-          component: DashboardView,
+          path: '/api-keys',
+          name: 'API Keys',
+          component: ApiKeysView,
+        },
+        {
+          path: '/api-requests',
+          name: 'API Requests',
+          component: ApiRequests,
+        },
+        {
+          path: '/citizen-data',
+          name: 'Citizen Data',
+          component: CitizenData,
         },
       ],
     },

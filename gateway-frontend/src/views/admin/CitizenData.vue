@@ -2,52 +2,15 @@
   <section class="bg-[var(--sec)] h-full flex flex-col items-center gap-4 pb-20">
     <div class="flex justify-between w-full md:w-[70%] py-8 rounded">
       <div class="flex flex-col">
-        <div class="text-2xl">Institutions</div>
-        <div class="text-gray-500 text-[13px]">Manage registered institutions and their access</div>
+        <div class="text-2xl">Citizen Data</div>
+        <div class="text-gray-500 text-[13px]">Search and manage citizen information</div>
       </div>
       <v-btn flat color="primary">REGISTER</v-btn>
     </div>
 
     <div class="flex flex-col w-full md:w-[70%] rounded gap-2">
-      <div class="flex flex-row gap-8 bg-gray-200 w-fit px-2 py-2 rounded">
-        <div
-          @click="switchInst('all')"
-          :class="instFilter.all ? 'bg-white px-1 rounded' : ''"
-          class="cursor-pointer transition-all duration-200 ease-in"
-        >
-          All institutions
-        </div>
-        <div
-          @click="switchInst('gov')"
-          :class="instFilter.gov ? 'bg-white px-1 rounded' : ''"
-          class="cursor-pointer transition-all duration-200 ease-in"
-        >
-          Government
-        </div>
-        <div
-          @click="switchInst('health')"
-          :class="instFilter.health ? 'bg-white px-1 rounded' : ''"
-          class="cursor-pointer transition-all duration-200 ease-in"
-        >
-          Healthcare
-        </div>
-        <div
-          @click="switchInst('academic')"
-          :class="instFilter.academic ? 'bg-white px-1 rounded' : ''"
-          class="cursor-pointer transition-all duration-200 ease-in"
-        >
-          Academic
-        </div>
-        <div
-          @click="switchInst('private')"
-          :class="instFilter.private ? 'bg-white px-1 rounded' : ''"
-          class="cursor-pointer transition-all duration-200 ease-in"
-        >
-          Mobile Networks
-        </div>
-      </div>
       <v-text-field
-        label="Search institutions"
+        label="Search by name, ID number, or other details..."
         prepend-inner-icon="mdi-magnify"
         variant="outlined"
       ></v-text-field>
@@ -56,12 +19,12 @@
     <v-table height="80%" fixed-header class="md:w-[70%] rounded border min-h-[300px]">
       <thead>
         <tr class="text-lg font-bold">
-          <th class="text-left">Institution</th>
-          <th class="text-left">Type</th>
-          <th class="text-left">API Access</th>
-          <th class="text-left">Status</th>
-          <th class="text-left">Joined</th>
-          <th class="text-left">Admins</th>
+          <th class="text-left">National ID</th>
+          <th class="text-left">Name</th>
+          <th class="text-left">Date of Birth</th>
+          <th class="text-left">Gender</th>
+          <th class="text-left">Location</th>
+          <th class="text-left">Last Updated</th>
           <th class="text-left">Actions</th>
         </tr>
       </thead>
@@ -126,35 +89,13 @@
 <script setup>
 import { ref } from 'vue'
 
-const instFilter = ref({
-  all: true,
-  gov: false,
-  health: false,
-  private: false,
-  academic: false,
-})
-
-const switchInst = (inst) => {
-  ;(instFilter.value.all = false),
-    (instFilter.value.gov = false),
-    (instFilter.value.health = false),
-    (instFilter.value.private = false),
-    (instFilter.value.academic = false)
-
-  if (inst == 'all') instFilter.value.all = true
-  if (inst == 'gov') instFilter.value.gov = true
-  if (inst == 'health') instFilter.value.health = true
-  if (inst == 'private') instFilter.value.private = true
-  if (inst == 'academic') instFilter.value.academic = true
-}
-
 {
-  /* <th class="text-left">Type</th>
-          <th class="text-left">API Access</th>
-          <th class="text-left">Status</th>
-          <th class="text-left">Joined</th>
-          <th class="text-left">Admins</th>
-          <th class="text-left">Actions</th> */
+  /* <th class="text-left">National ID</th>
+          <th class="text-left">Name</th>
+          <th class="text-left">Date of Birth</th>
+          <th class="text-left">Gender</th>
+          <th class="text-left">Location</th>
+          <th class="text-left">Last Updated</th> */
 }
 
 const desserts = [
@@ -192,15 +133,6 @@ const desserts = [
     api_access: 'disabled',
     status: 'verified',
     joined: '12/08/2002',
-    admins: 1,
-  },
-  {
-    name: 'Vodacom Company',
-    abbrev: 'Vodacom',
-    type: 'Mobile Network',
-    api_access: 'enabled',
-    status: 'pending',
-    joined: '29/09/2025',
     admins: 1,
   },
 ]

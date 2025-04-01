@@ -37,11 +37,28 @@ const drawer = ref(false)
               <!-- Custom title -->
             </template>
           </v-list-item>
+          <v-list-item to="/api-keys" prepend-icon="mdi-key" title="api-keys" value="api-keys">
+            <template v-slot:title>
+              <span class="text-lg">API Keys</span>
+              <!-- Custom title -->
+            </template>
+          </v-list-item>
           <v-list-item
-            to="/reports"
-            prepend-icon="mdi-account-multiple"
-            title="Reports"
-            value="Reports"
+            to="/api-requests"
+            prepend-icon="mdi-link-variant"
+            title="api-requests"
+            value="api-requests"
+          >
+            <template v-slot:title>
+              <span class="text-lg">API Requests</span>
+              <!-- Custom title -->
+            </template>
+          </v-list-item>
+          <v-list-item
+            to="/citizen-data"
+            prepend-icon="mdi-database"
+            title="citizen-data"
+            value="citizen-data"
           >
             <template v-slot:title>
               <span class="text-lg">Citizen Data</span>
