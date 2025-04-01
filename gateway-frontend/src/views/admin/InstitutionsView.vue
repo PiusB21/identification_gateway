@@ -5,42 +5,42 @@
         <div class="text-2xl">Institutions</div>
         <div class="text-gray-500 text-[13px]">Manage registered institutions and their access</div>
       </div>
-      <v-btn flat color="primary">REGISTER</v-btn>
+      <v-btn flat prepend-icon="mdi-bank-plus" color="primary">ADD Institution</v-btn>
     </div>
 
     <div class="flex flex-col w-full md:w-[70%] rounded gap-2">
       <div class="flex flex-row gap-8 bg-gray-200 w-fit px-2 py-2 rounded">
         <div
           @click="switchInst('all')"
-          :class="instFilter.all ? 'bg-white px-1 rounded' : ''"
+          :class="instFilter.all ? 'bg-white px-1 rounded shadow' : ''"
           class="cursor-pointer transition-all duration-200 ease-in"
         >
           All institutions
         </div>
         <div
           @click="switchInst('gov')"
-          :class="instFilter.gov ? 'bg-white px-1 rounded' : ''"
+          :class="instFilter.gov ? 'bg-white px-1 rounded shadow' : ''"
           class="cursor-pointer transition-all duration-200 ease-in"
         >
           Government
         </div>
         <div
           @click="switchInst('health')"
-          :class="instFilter.health ? 'bg-white px-1 rounded' : ''"
+          :class="instFilter.health ? 'bg-white px-1 rounded shadow' : ''"
           class="cursor-pointer transition-all duration-200 ease-in"
         >
           Healthcare
         </div>
         <div
           @click="switchInst('academic')"
-          :class="instFilter.academic ? 'bg-white px-1 rounded' : ''"
+          :class="instFilter.academic ? 'bg-white px-1 rounded shadow' : ''"
           class="cursor-pointer transition-all duration-200 ease-in"
         >
           Academic
         </div>
         <div
           @click="switchInst('private')"
-          :class="instFilter.private ? 'bg-white px-1 rounded' : ''"
+          :class="instFilter.private ? 'bg-white px-1 rounded shadow' : ''"
           class="cursor-pointer transition-all duration-200 ease-in"
         >
           Mobile Networks

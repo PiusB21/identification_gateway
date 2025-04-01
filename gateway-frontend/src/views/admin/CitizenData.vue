@@ -5,7 +5,7 @@
         <div class="text-2xl">Citizen Data</div>
         <div class="text-gray-500 text-[13px]">Search and manage citizen information</div>
       </div>
-      <v-btn flat color="primary">REGISTER</v-btn>
+      <v-btn flat color="primary" prepend-icon="mdi-account-plus">ADD CITIZEN</v-btn>
     </div>
 
     <div class="flex flex-col w-full md:w-[70%] rounded gap-2">
@@ -31,51 +31,19 @@
       <tbody>
         <tr v-for="item in desserts" :key="item.name">
           <td>
-            <div class="flex flex-row gap-2 items-center font-sans">
-              <div
-                class="bg-[var(--sec)] text-[var(--pri)] text-xl w-8 h-8 rounded p-2 flex justify-center items-center"
-              >
-                {{ item.name[0] }}
-              </div>
-              <div class="flex flex-col">
-                <div class="">{{ item.name }}</div>
-                <div class="text-gray-500 text-[13px]">{{ item.abbrev }}</div>
-              </div>
-            </div>
+            {{ item.national_id }}
           </td>
           <td>
-            <div
-              class="h-fit w-34 border px-3 py-1 text-center rounded-full text-[12px] font-semibold"
-            >
-              {{ item.type }}
-            </div>
+            {{ item.name }}
           </td>
           <td>
-            <div :class="item.api_access == 'enabled' ? 'text-green-700' : 'text-red-700'">
-              <v-icon
-                v-if="item.api_access == 'enabled'"
-                variant="outlined"
-                icon="mdi-check"
-              ></v-icon>
-              <v-icon v-else variant="outlined" icon="mdi-close"></v-icon>
-
-              {{ item.api_access }}
-            </div>
+            {{ item.dob }}
           </td>
           <td>
-            <div
-              :class="
-                item.status == 'verified'
-                  ? 'bg-green-50 text-green-700 border-green-700'
-                  : 'bg-yellow-50 text-yellow-700 border-yellow-700'
-              "
-              class="border rounded-full text-center"
-            >
-              {{ item.status }}
-            </div>
+            {{ item.gender }}
           </td>
-          <td>{{ item.joined }}</td>
-          <td>{{ item.admins }}</td>
+          <td>{{ item.location }}</td>
+          <td>{{ item.last_updated }}</td>
           <td>
             <v-btn dense variant="outlined">Edit</v-btn>
             <v-btn>View</v-btn>
@@ -100,40 +68,44 @@ import { ref } from 'vue'
 
 const desserts = [
   {
-    name: 'National Identification Agency',
-    abbrev: 'NIDA',
-    type: 'Government',
-    api_access: 'enabled', //enabled,disabled
-    status: 'verified', //pending,verified,
-    joined: '02/08/2022',
-    admins: 1,
+    national_id: 'TZ-1232-12315-2322-001',
+    name: 'Pius Baraka',
+    dob: '21/08/2001',
+    gender: 'male',
+    location: 'Arusha,Arusha',
+    last_updated: '02/08/2022',
   },
   {
-    name: 'Registration Insolvency and Trusteeship Agency',
-    abbrev: 'RITA',
-    type: 'Government',
-    api_access: 'enabled',
-    status: 'verified',
-    joined: '03/03/2020',
-    admins: 1,
+    national_id: 'TZ-9876-54321-6789-002',
+    name: 'Amina Juma',
+    dob: '14/05/1995',
+    gender: 'female',
+    location: 'Dar es Salaam, Kinondoni',
+    last_updated: '10/03/2023',
   },
   {
-    name: 'National Health Insurance Fund',
-    abbrev: 'NHIF',
-    type: 'Healthcare',
-    api_access: 'enabled',
-    status: 'verified',
-    joined: '21/12/2010',
-    admins: 1,
+    national_id: 'TZ-4567-89012-3456-003',
+    name: 'John Mwenda',
+    dob: '30/11/1988',
+    gender: 'male',
+    location: 'Dodoma, Dodoma',
+    last_updated: '15/09/2021',
   },
   {
-    name: 'University of Dodoma',
-    abbrev: 'UDOM',
-    type: 'Academic',
-    api_access: 'disabled',
-    status: 'verified',
-    joined: '12/08/2002',
-    admins: 1,
+    national_id: 'TZ-2345-67890-1234-004',
+    name: 'Fatma Hassan',
+    dob: '07/02/1999',
+    gender: 'female',
+    location: 'Mwanza, Ilemela',
+    last_updated: '05/07/2022',
+  },
+  {
+    national_id: 'TZ-6789-01234-5678-005',
+    name: 'David Kimaro',
+    dob: '12/06/1984',
+    gender: 'male',
+    location: 'Mbeya, Mbeya City',
+    last_updated: '20/01/2024',
   },
 ]
 </script>
