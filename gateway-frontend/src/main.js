@@ -2,6 +2,8 @@ import './assets/main.css'
 import '@mdi/font/css/materialdesignicons.css'
 import '@fortawesome/fontawesome-free/css/all.css'
 
+import { VDateInput } from 'vuetify/labs/VDateInput'
+
 import { fa } from 'vuetify/iconsets/fa'
 import { aliases, mdi } from 'vuetify/lib/iconsets/mdi'
 
@@ -13,7 +15,7 @@ import router from './router'
 
 import 'vuetify/styles'
 import { createVuetify } from 'vuetify'
-import * as components from 'vuetify/components'
+import * as defaultComponents from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 
 const app = createApp(App)
@@ -27,7 +29,11 @@ const vuetify = createVuetify({
       fa,
     },
   },
-  components,
+  components: {
+    ...defaultComponents,
+    VDateInput,
+  },
+
   directives,
 })
 

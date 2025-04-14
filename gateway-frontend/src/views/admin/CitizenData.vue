@@ -1,11 +1,25 @@
 <template>
-  <section class="bg-[var(--sec)] h-full flex flex-col items-center gap-4 pb-20">
+  <v-overlay v-model="overlay" class="flex items-center justify-center">
+    <AddCitizenForm :themeColor="props.themeColor" />
+  </v-overlay>
+
+  <section
+    :class="route.path == '/citizen-data' ? 'bg-[var(--sec)]' : ''"
+    class="h-full flex flex-col items-center gap-4 pb-20"
+  >
     <div class="flex justify-between w-full md:w-[70%] py-8 rounded">
       <div class="flex flex-col">
         <div class="text-2xl">Citizen Data</div>
         <div class="text-gray-500 text-[13px]">Search and manage citizen information</div>
       </div>
-      <v-btn flat color="primary" prepend-icon="mdi-account-plus">ADD CITIZEN</v-btn>
+      <v-btn
+        @click="overlay = true"
+        flat
+        :color="props.themeColor || 'primary'"
+        prepend-icon="mdi-account-plus"
+      >
+        ADD CITIZEN
+      </v-btn>
     </div>
 
     <div class="flex flex-col w-full md:w-[70%] rounded gap-2">
@@ -56,15 +70,14 @@
 
 <script setup>
 import { ref } from 'vue'
+import { useRoute } from 'vue-router'
+import AddCitizenForm from './AddCitizenForm.vue'
 
-{
-  /* <th class="text-left">National ID</th>
-          <th class="text-left">Name</th>
-          <th class="text-left">Date of Birth</th>
-          <th class="text-left">Gender</th>
-          <th class="text-left">Location</th>
-          <th class="text-left">Last Updated</th> */
-}
+const overlay = ref(false)
+
+const route = useRoute()
+
+const props = defineProps(['themeColor'])
 
 const desserts = [
   {

@@ -7,45 +7,14 @@
       </div>
     </nav>
     <div class="md:w-[80%] py-8">
-      <div :style="{ color: 'rgb(47,103,0)' }" class="text-2xl font-semibold pb-4">Fetch data</div>
-      <div class="flex gap-16">
-        <v-text-field
-          color="rgb(47,103,0)"
-          v-model="searchedId"
-          variant="outlined"
-          label="Citizen ID"
-        >
-          <template v-slot:append>
-            <v-btn size="x-large" color="rgb(47,103,0)">
-              <div class="lowercase text-md">Fetch</div>
-            </v-btn>
-          </template>
-        </v-text-field>
-      </div>
-      <section class="flex flex-col gap-4 py-4">
-        <div class="grid grid-cols-8">
-          <div class="col-span-1 text-gray-600">Id</div>
-          <div class="col-span-7 text-lg">afd-xx-xx-xx-xxxx-wwww-as-as</div>
-        </div>
-        <div class="grid grid-cols-8">
-          <div class="col-span-1 text-gray-600">Name</div>
-          <div class="col-span-7 text-lg">John Doe</div>
-        </div>
-        <div class="grid grid-cols-8">
-          <div class="col-span-1 text-gray-600">Age</div>
-          <div class="col-span-7 text-lg">40 years</div>
-        </div>
-        <div class="grid grid-cols-8">
-          <div class="col-span-1 text-gray-600">NHIF Package</div>
-          <div class="col-span-7 text-lg">Individual</div>
-        </div>
-      </section>
+      <CitizenData :theme-color="'rgb(47,103,0)'" />
     </div>
   </div>
 </template>
 
 <script setup>
 import { ref } from 'vue'
+import CitizenData from '../admin/CitizenData.vue'
 
 const searchedId = ref('')
 </script>
