@@ -7,7 +7,7 @@ const router = useRouter()
 
 onMounted(() => {
   const canvasElements = [...document.querySelectorAll('canvas')]
-  renderCanvas(canvasElements)
+  renderCanvas(canvasElements, 'rgba(255,255,255,0.6)', 'rgba(57,60,212,0.09)')
 })
 </script>
 
@@ -15,19 +15,6 @@ onMounted(() => {
   <main
     class="overflow-hidden overscoll-none tracking-wide fixed top-0 left-0 w-[100%] overflow-y-scroll"
   >
-    <!-- <header
-      class="relative top-0 left-0 w-[100%] h-[80px] z-[1] bg-[var(--bg-color)] flex justify-center align-center"
-    >
-      <div class="flex grid grid-cols-12 w-full items-center">
-        <ul class="flex col-start-5 col-span-6 gap-[1rem]">
-          <li><router-link to="/interactive-landing">Home</router-link></li>
-          <li><router-link to="/interactive-landing">About</router-link></li>
-          <li><router-link to="/interactive-landing">Services</router-link></li>
-          <li><router-link to="/interactive-landing">Projects</router-link></li>
-          <li><router-link to="/interactive-landing">Contact</router-link></li>
-        </ul>
-      </div>
-    </header> -->
     <section class="relative w-[100%] flex flex-col py-[80px] overflow-hidden min-h-[100vh]">
       <canvas
         id="squareCanvas"

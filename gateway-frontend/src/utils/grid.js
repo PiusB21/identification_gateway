@@ -1,12 +1,12 @@
 import { ref } from 'vue'
 
 class Canvas {
-  constructor(canvas) {
+  constructor(canvas, fillColor, strokeColor) {
     this.canvas = canvas
     this.ctx = this.canvas.getContext('2d')
     this.squareSize = 90
     this.resizeCanvas()
-    this.drawSquares()
+    this.drawSquares(fillColor, strokeColor)
   }
 
   //for when screen is resized(viewport)
@@ -20,7 +20,7 @@ class Canvas {
     this.ctx.scale(pixelRatio, pixelRatio)
   }
 
-  drawSquares() {
+  drawSquares(fillColor, strokeColor) {
     const rows = Math.ceil(this.canvas.height / this.squareSize) + 2
     const columns = Math.ceil(this.canvas.width / this.squareSize) + 2
 
@@ -30,14 +30,14 @@ class Canvas {
     for (let x = 0; x < columns; x++) {
       for (let y = 0; y < rows; y++) {
         const isGrey = Math.random() < 0.1
-        this.ctx.fillStyle = isGrey ? 'rgba(255,255,255,0.6)' : 'transparent'
+        this.ctx.fillStyle = isGrey ? fillColor : 'transparent'
         this.ctx.fillRect(
           x * this.squareSize,
           y * this.squareSize,
           this.squareSize,
           this.squareSize,
         )
-        this.ctx.strokeStyle = 'rgba(57,60,212,0.09)'
+        this.ctx.strokeStyle = strokeColor
         this.ctx.strokeRect(
           x * this.squareSize,
           y * this.squareSize,
@@ -51,16 +51,16 @@ class Canvas {
 
 const canvasArray = ref([])
 
-export const renderCanvas = (canvasElements) => {
+export const renderCanvas = (canvasElements, fillColor, strokeColor) => {
   canvasElements.forEach((canvas) => {
-    let squareCanvas = new Canvas(canvas)
+    let squareCanvas = new Canvas(canvas, fillColor, strokeColor)
     canvasArray.value.push(squareCanvas)
   })
 
   window.addEventListener('resize', () => {
     canvasArray.value.forEach((canvas) => {
       canvas.resizeCanvas()
-      canvas.drawSquares()
+      canvas.drawSquares(fillColor, strokeColor)
     })
   })
 }

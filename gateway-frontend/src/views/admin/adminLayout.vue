@@ -12,7 +12,6 @@ const drawer = ref(false)
           <v-list-item prepend-icon="mdi-lan-connect" title="Gateway Portal">
             <template v-slot:title>
               <span class="text-xl font-bold">Gateway Portal</span>
-              <!-- Custom title -->
             </template>
           </v-list-item>
         </v-list>
