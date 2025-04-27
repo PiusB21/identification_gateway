@@ -3,7 +3,13 @@
     <nav :style="{ backgroundColor: 'rgb(125, 73, 12)' }" class="py-4 text-white w-full">
       <div class="w-[80%] mx-auto text-3xl flex justify-between">
         <div>NHIF</div>
-        <v-btn color="white" icon="mdi-logout" title="Logout" variant="outlined"></v-btn>
+        <v-btn
+          @click="router.push('bima')"
+          color="white"
+          icon="mdi-logout"
+          title="Logout"
+          variant="outlined"
+        ></v-btn>
       </div>
     </nav>
     <div class="md:w-[80%] py-8">
@@ -24,22 +30,23 @@
           </template>
         </v-text-field>
       </div>
+
       <section class="flex flex-col gap-4 py-4">
         <div class="grid grid-cols-8">
           <div class="col-span-1 text-gray-600">Id</div>
-          <div class="col-span-7 text-lg">afd-xx-xx-xx-xxxx-wwww-as-as</div>
+          <div class="col-span-7 text-lg">TZ-1232-12315-2322-001</div>
         </div>
         <div class="grid grid-cols-8">
           <div class="col-span-1 text-gray-600">Name</div>
           <div class="col-span-7 text-lg">John Doe</div>
         </div>
         <div class="grid grid-cols-8">
-          <div class="col-span-1 text-gray-600">Age</div>
-          <div class="col-span-7 text-lg">40 years</div>
+          <div class="col-span-1 text-gray-600">Date of Birth</div>
+          <div class="col-span-7 text-lg">21/08/2001</div>
         </div>
         <div class="grid grid-cols-8">
-          <div class="col-span-1 text-gray-600">NHIF Package</div>
-          <div class="col-span-7 text-lg">Individual</div>
+          <div class="col-span-1 text-gray-600">Life Status</div>
+          <div class="col-span-7 text-lg">ALIVE</div>
         </div>
       </section>
     </div>
@@ -48,6 +55,8 @@
 
 <script setup>
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 const searchedId = ref('')
 </script>

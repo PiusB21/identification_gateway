@@ -1,6 +1,6 @@
 <template>
   <section class="bg-[var(--sec)] h-full flex flex-col items-center gap-4 pb-20 overflow-y-auto">
-    <div class="flex justify-between w-full md:w-[75%] md:py-8 rounded">
+    <div class="flex justify-between w-full md:w-[80%] py-8 rounded">
       <div class="flex flex-col px-1">
         <div class="text-2xl">API Keys</div>
         <div class="text-gray-500 text-[13px]">Manage institution keys and permissions</div>
@@ -8,7 +8,7 @@
       <v-btn flat prepend-icon="mdi-key" color="primary">create new key</v-btn>
     </div>
 
-    <div class="flex flex-col w-full md:w-[75%] rounded gap-2">
+    <div class="flex flex-col w-full md:w-[80%] rounded gap-2">
       <div class="grid grid-cols-3 sm:gap-8 max-sm:grid-cols-1 mx-2">
         <v-autocomplete
           density="compact"
@@ -64,11 +64,9 @@
           <div class="grid grid-cols-2 pb-4 mb-2 border-b">
             <div class="text-gray-500 text-[14px] flex flex-col gap-2">
               <h4>Permissions</h4>
-              <div class="flex flex-col gap-1">
-                <div class="px-1 bg-[var(--sec)] text-[var(--pri)] w-fit">read:basic</div>
-                <div class="px-1 bg-[var(--sec)] text-[var(--pri)] w-fit">read:address</div>
-                <div class="px-1 bg-[var(--sec)] text-[var(--pri)] w-fit">write:basic</div>
-                <div class="px-1 bg-[var(--sec)] text-[var(--pri)] w-fit">write:address</div>
+              <div class="flex flex-wrap gap-1">
+                <div class="px-1 bg-[var(--sec)] text-[var(--pri)] w-fit">write</div>
+                <div class="px-1 bg-[var(--sec)] text-[var(--pri)] w-fit">read</div>
               </div>
             </div>
             <div class="text-gray-500 text-[14px] flex flex-col gap-2">
@@ -96,9 +94,6 @@
             </div>
           </div>
           <div class="flex justify-between my-4 gap-4">
-            <v-btn size="small" color="grey-lighten-4" class="elevation-0 border"
-              >Manage Permissions</v-btn
-            >
             <v-btn size="small" color="red-darken-1" class="elevation-0">Revoke</v-btn>
           </div>
         </div>

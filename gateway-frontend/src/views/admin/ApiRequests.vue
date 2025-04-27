@@ -1,13 +1,13 @@
 <template>
   <section class="bg-[var(--sec)] h-full flex flex-col items-center gap-4 pb-20">
-    <div class="flex justify-between w-full md:w-[70%] py-8 rounded">
+    <div class="flex justify-between w-full md:w-[80%] py-8 rounded">
       <div class="flex flex-col">
         <div class="text-2xl">API Requests</div>
         <div class="text-gray-500 text-[13px]">Monitor and audit API request activity</div>
       </div>
     </div>
 
-    <div class="flex flex-col w-full md:w-[70%] rounded gap-2">
+    <div class="flex flex-col w-full md:w-[80%] rounded gap-2">
       <div class="flex flex-row gap-8 bg-gray-200 w-fit px-2 py-2 rounded">
         <div
           @click="switchInst('all')"
@@ -59,7 +59,7 @@
       </div>
     </div>
 
-    <v-table height="80%" fixed-header class="md:w-[70%] rounded border min-h-[300px]">
+    <v-table height="80%" fixed-header class="md:w-[80%] rounded border min-h-[300px]">
       <thead>
         <tr class="text-lg font-bold">
           <th class="text-left">Institution</th>
@@ -70,7 +70,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="item in desserts" :key="item.name">
+        <tr class="text-[15px] lg:text-lg" v-for="item in desserts" :key="item.name">
           <td>
             <div class="flex flex-row gap-2 items-center font-sans">
               <div class="">{{ item.name }}</div>
@@ -90,7 +90,7 @@
                 item.method == 'put' ? 'bg-yellow-50 text-yellow-700 border-yellow-700' : '',
                 item.method == 'delete' ? 'bg-red-50 text-red-700 border-red-700' : '',
               ]"
-              class="border rounded-full text-center w-[80px] px-2 font-medium uppercase"
+              class="border rounded-full text-center w-[80px] px-2 font-medium uppercase text-[15px]"
             >
               {{ item.method }}
             </div>
@@ -142,13 +142,6 @@ const switchInst = (inst) => {
   if (inst == 'successful') instFilter.value.successful = true
   if (inst == 'failed') instFilter.value.failed = true
   if (inst == 'unauthorized') instFilter.value.unauthorized = true
-}
-
-{
-  /*  <th class="text-left">Endpoint</th>
-          <th class="text-left">Method</th>
-          <th class="text-left">Status</th>
-          <th class="text-left">Time</th> */
 }
 
 const desserts = [

@@ -3,7 +3,13 @@
     <nav :style="{ backgroundColor: 'rgba(0,114,187)' }" class="py-4 text-white w-full">
       <div class="w-[80%] mx-auto text-3xl flex justify-between">
         <div>RITA</div>
-        <v-btn color="white" icon="mdi-logout" title="Logout" variant="outlined"></v-btn>
+        <v-btn
+          @click="router.push('rita')"
+          color="white"
+          icon="mdi-logout"
+          title="Logout"
+          variant="outlined"
+        ></v-btn>
       </div>
     </nav>
     <div class="md:w-[80%] py-8">
@@ -15,6 +21,9 @@
 <script setup>
 import { ref } from 'vue'
 import CitizenData from '../admin/CitizenData.vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 const searchedId = ref('')
 </script>

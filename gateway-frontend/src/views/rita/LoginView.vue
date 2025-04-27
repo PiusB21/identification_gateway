@@ -41,7 +41,9 @@
           </v-text-field>
 
           <div class="py-4 w-full">
-            <v-btn color="rgb(0,114,187)" width="100%">Login</v-btn>
+            <v-btn @click="router.push('/rita-interface')" color="rgb(0,114,187)" width="100%"
+              >Login</v-btn
+            >
           </div>
 
           <!-- <div class="w-full pb-8">

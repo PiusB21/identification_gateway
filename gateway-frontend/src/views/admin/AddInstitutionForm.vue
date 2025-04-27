@@ -4,62 +4,37 @@
       :style="{ color: props.themeColor || '#1867c0' }"
       class="font-semibold text-2xl pb-8 text-center"
     >
-      Register Citizen
+      Register Institution
     </div>
 
     <v-form class="flex flex-col gap-4 z-10">
-      <div class="grid grid-cols-3 gap-2">
-        <v-text-field
-          v-model="formData.fname"
-          variant="outlined"
-          label="First Name"
-          :color="props.themeColor"
-          @focus="focused[0] = true"
-          @blur="focused[0] = false"
-        >
-        </v-text-field>
-        <v-text-field
-          v-model="formData.mname"
-          variant="outlined"
-          label="Middle Name"
-          :color="props.themeColor"
-          @focus="focused[1] = true"
-          @blur="focused[1] = false"
-        >
-        </v-text-field>
-
-        <v-text-field
-          v-model="formData.lname"
-          variant="outlined"
-          label="Surname"
-          :color="props.themeColor"
-          @focus="focused[2] = true"
-          @blur="focused[2] = false"
-        >
-        </v-text-field>
-      </div>
       <div class="grid grid-cols-2 gap-2">
         <v-text-field
           v-model="formData.region"
           variant="outlined"
-          label="Region"
+          label="Institution Name"
           :color="props.themeColor"
           @focus="focused[3] = true"
           @blur="focused[3] = false"
         >
         </v-text-field>
+
         <v-text-field
-          v-model="formData.district"
+          v-model="formData.region"
           variant="outlined"
-          label="District"
+          label="Abbreviation"
           :color="props.themeColor"
-          @focus="focused[4] = true"
-          @blur="focused[4] = false"
+          @focus="focused[3] = true"
+          @blur="focused[3] = false"
         >
         </v-text-field>
       </div>
 
-      <v-date-input v-model="formData.dob" label="Date of birth" variant="outlined"></v-date-input>
+      <v-select
+        label="Type"
+        :items="['Government', 'Health', 'Private', 'Academic']"
+        variant="outlined"
+      ></v-select>
 
       <div class="py-4 w-full">
         <v-btn :color="props.themeColor || 'primary'" width="100%">Add</v-btn>
@@ -74,7 +49,7 @@ import { onMounted, ref } from 'vue'
 const focused = ref([])
 
 const formData = ref({
-  fname: '',
+  name: '',
   mname: '',
   lname: '',
   region: '',
@@ -85,7 +60,7 @@ const formData = ref({
 const props = defineProps(['themeColor', 'editedCitizen'])
 
 const convertToDateObject = (dateString) => {
-  const [day, month, year] = dateString.split('/').map(Number)
+  const [day, month, year] = dateString.split('/').map(Number) //for DD/MM/YYYY
   const date = new Date(year, month - 1, day) // Month is zero-based
   return date
 }

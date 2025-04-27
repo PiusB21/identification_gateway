@@ -81,7 +81,7 @@ const drawer = ref(false)
 
           <v-btn color="primary" icon="mdi-logout" title="Logout" variant="outlined"></v-btn>
         </v-app-bar>
-        <div class="h-full w-full">
+        <div class="h-full w-full overflow-y-auto">
           <router-view></router-view>
         </div>
       </v-main>

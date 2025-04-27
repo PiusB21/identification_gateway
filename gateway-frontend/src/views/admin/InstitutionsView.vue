@@ -1,14 +1,19 @@
 <template>
+  <v-overlay v-model="overlay" class="flex items-center justify-center">
+    <AddInstitutionForm />
+  </v-overlay>
   <section class="bg-[var(--sec)] h-full flex flex-col items-center gap-4 pb-20">
-    <div class="flex justify-between w-full md:w-[70%] py-8 rounded">
+    <div class="flex justify-between w-full md:w-[80%] py-8 rounded">
       <div class="flex flex-col">
         <div class="text-2xl">Institutions</div>
         <div class="text-gray-500 text-[13px]">Manage registered institutions and their access</div>
       </div>
-      <v-btn flat prepend-icon="mdi-bank-plus" color="primary">ADD Institution</v-btn>
+      <v-btn @click="overlay = true" flat prepend-icon="mdi-bank-plus" color="primary"
+        >ADD Institution</v-btn
+      >
     </div>
 
-    <div class="flex flex-col w-full md:w-[70%] rounded gap-2">
+    <div class="flex flex-col w-full md:w-[80%] rounded gap-2">
       <div class="flex flex-row gap-8 bg-gray-200 w-fit px-2 py-2 rounded">
         <div
           @click="switchInst('all')"
@@ -53,12 +58,12 @@
       ></v-text-field>
     </div>
 
-    <v-table height="80%" fixed-header class="md:w-[70%] rounded border min-h-[300px]">
+    <v-table height="80%" fixed-header class="md:w-[80%] rounded border min-h-[50vh]">
       <thead>
         <tr class="text-lg font-bold">
           <th class="text-left">Institution</th>
           <th class="text-left">Type</th>
-          <th class="text-left">API Access</th>
+          <th class="text-left text-nowrap">API Access</th>
           <th class="text-left">Status</th>
           <th class="text-left">Joined</th>
           <th class="text-left">Admins</th>
@@ -66,16 +71,16 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="item in desserts" :key="item.name">
+        <tr v-for="item in institutions" :key="item.name">
           <td>
             <div class="flex flex-row gap-2 items-center font-sans">
               <div
-                class="bg-[var(--sec)] text-[var(--pri)] text-xl w-8 h-8 rounded p-2 flex justify-center items-center"
+                class="bg-[var(--sec)] text-[var(--pri)] text-xl w-8 h-8 rounded p-2 flex justify-center items-center text-nowrap"
               >
                 {{ item.name[0] }}
               </div>
               <div class="flex flex-col">
-                <div class="">{{ item.name }}</div>
+                <div class="whitespace-nowrap">{{ item.name }}</div>
                 <div class="text-gray-500 text-[13px]">{{ item.abbrev }}</div>
               </div>
             </div>
@@ -106,16 +111,22 @@
                   ? 'bg-green-50 text-green-700 border-green-700'
                   : 'bg-yellow-50 text-yellow-700 border-yellow-700'
               "
-              class="border rounded-full text-center"
+              class="border rounded-full text-center px-1"
             >
               {{ item.status }}
             </div>
           </td>
           <td>{{ item.joined }}</td>
           <td>{{ item.admins }}</td>
-          <td>
-            <v-btn dense variant="outlined">Edit</v-btn>
-            <v-btn>View</v-btn>
+          <td class="flex">
+            <v-btn variant="text" icon="mdi-pen" title="Edit"></v-btn>
+            <v-btn
+              color="red"
+              @click="confirmAlert(`Are you sure you want to delete institution ${item.abbrev}?`)"
+              variant="text"
+              icon="mdi-delete"
+              title="View"
+            ></v-btn>
           </td>
         </tr>
       </tbody>
@@ -125,6 +136,10 @@
 
 <script setup>
 import { ref } from 'vue'
+import AddInstitutionForm from './AddInstitutionForm.vue'
+import { confirmAlert, confirmationAlert } from '@/utils/notificationService'
+
+const overlay = ref(false)
 
 const instFilter = ref({
   all: true,
@@ -148,16 +163,7 @@ const switchInst = (inst) => {
   if (inst == 'academic') instFilter.value.academic = true
 }
 
-{
-  /* <th class="text-left">Type</th>
-          <th class="text-left">API Access</th>
-          <th class="text-left">Status</th>
-          <th class="text-left">Joined</th>
-          <th class="text-left">Admins</th>
-          <th class="text-left">Actions</th> */
-}
-
-const desserts = [
+const institutions = [
   {
     name: 'National Identification Agency',
     abbrev: 'NIDA',
