@@ -1,6 +1,6 @@
 <template>
   <section class="bg-[var(--sec)] h-full flex flex-col items-center gap-4 pb-20 overflow-y-auto">
-    <div class="flex justify-between w-full md:w-[80%] py-8 rounded">
+    <div class="flex justify-between w-full md:w-[90%] py-8 rounded">
       <div class="flex flex-col px-1">
         <div class="text-2xl">API Keys</div>
         <div class="text-gray-500 text-[13px]">Manage institution keys and permissions</div>
@@ -8,7 +8,7 @@
       <v-btn flat prepend-icon="mdi-key" color="primary">create new key</v-btn>
     </div>
 
-    <div class="flex flex-col w-full md:w-[80%] rounded gap-2">
+    <div class="flex flex-col w-full md:w-[90%] rounded gap-2">
       <div class="grid grid-cols-3 sm:gap-8 max-sm:grid-cols-1 mx-2">
         <v-autocomplete
           density="compact"
@@ -31,7 +31,7 @@
       </div>
       <div class="flex flex-wrap gap-2 items-center max-md:justify-center">
         <div
-          v-for="i in 10"
+          v-for="inst in desserts"
           class="border border-gray-400 rounded px-4 py-4 bg-white flex flex-col w-[24%] min-w-fit max-sm:w-[90%]"
         >
           <div class="flex justify-between">
@@ -42,7 +42,7 @@
                 color="primary"
                 icon="mdi-key-outline"
               ></v-icon>
-              <div class="text-lg">NIDA Main API key</div>
+              <div class="text-lg">{{ inst.abbrev }} Main API key</div>
             </div>
             <div
               :class="
