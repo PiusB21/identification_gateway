@@ -7,7 +7,7 @@
     :class="route.path == '/citizen-data' ? 'bg-[var(--sec)]' : ''"
     class="h-full flex flex-col items-center gap-4 pb-20"
   >
-    <div class="flex justify-between w-full md:w-[80%] py-8 rounded">
+    <div class="flex justify-between w-full md:w-[90%] py-8 rounded">
       <div class="flex flex-col">
         <div class="text-2xl">Citizen Data</div>
         <div class="text-gray-500 text-[13px]">Search and manage citizen information</div>
@@ -22,7 +22,7 @@
       </v-btn>
     </div>
 
-    <div class="flex flex-col w-full md:w-[80%] rounded gap-2">
+    <div class="flex flex-col w-full md:w-[90%] rounded gap-2">
       <v-text-field
         label="Search by name, ID number, or other details..."
         prepend-inner-icon="mdi-magnify"
@@ -30,7 +30,7 @@
       ></v-text-field>
     </div>
 
-    <v-table height="80%" fixed-header class="md:w-[80%] rounded border min-h-[300px]">
+    <v-table height="80%" fixed-header class="md:w-[90%] rounded border min-h-[300px]">
       <thead>
         <tr
           class="text-lg font-bold"

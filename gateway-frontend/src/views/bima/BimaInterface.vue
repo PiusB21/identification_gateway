@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col items-center">
     <nav :style="{ backgroundColor: 'rgb(125, 73, 12)' }" class="py-4 text-white w-full">
-      <div class="w-[80%] mx-auto text-3xl flex justify-between">
+      <div class="w-[90%] mx-auto text-3xl flex justify-between">
         <div>NHIF</div>
         <v-btn
           @click="router.push('bima')"
@@ -12,7 +12,7 @@
         ></v-btn>
       </div>
     </nav>
-    <div class="md:w-[80%] py-8">
+    <div class="md:w-[90%] py-8">
       <div :style="{ color: 'rgb(125, 73, 12)' }" class="text-2xl font-semibold pb-4">
         Fetch data
       </div>
