@@ -41,17 +41,14 @@ contract IdentityGateway {
         string userType;
     }
     //Arrays
+
     Identites[] public arrayofIdentities;
     Operators[] public operatorsArray;
     Institution[] institutionArray;
     Citizen[] citizenArray;
 
     //checking if the organization is available
-    function isAvailable(address _institutionAdress)
-        public
-        view
-        returns (bool)
-    {
+    function isAvailable(address _institutionAdress) public view returns (bool) {
         bool results = false;
         for (uint256 i; i < institutionArray.length; i++) {
             if (institutionArray[i].institutionAdress == _institutionAdress) {
