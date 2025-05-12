@@ -1,41 +1,28 @@
 <template>
   <v-overlay v-model="overlay" class="flex items-center justify-center">
-    <AddCitizenForm :editedCitizen="editedCitizen" :themeColor="props.themeColor" />
+    <AddCitizenForm @close="overlay = false" :editedCitizen="editedCitizen" :themeColor="props.themeColor" />
   </v-overlay>
 
-  <section
-    :class="route.path == '/citizen-data' ? 'bg-[var(--sec)]' : ''"
-    class="h-full flex flex-col items-center gap-4 pb-20"
-  >
+  <section :class="route.path == '/citizen-data' ? 'bg-[var(--sec)]' : ''"
+    class="h-full flex flex-col items-center gap-4 pb-20">
     <div class="flex justify-between w-full md:w-[90%] py-8 rounded">
       <div class="flex flex-col">
         <div class="text-2xl">Citizen Data</div>
         <div class="text-gray-500 text-[13px]">Search and manage citizen information</div>
       </div>
-      <v-btn
-        @click="overlay = true"
-        flat
-        :color="props.themeColor || 'primary'"
-        prepend-icon="mdi-account-plus"
-      >
+      <v-btn @click="overlay = true" flat :color="props.themeColor || 'primary'" prepend-icon="mdi-account-plus">
         ADD CITIZEN
       </v-btn>
     </div>
 
     <div class="flex flex-col w-full md:w-[90%] rounded gap-2">
-      <v-text-field
-        label="Search by name, ID number, or other details..."
-        prepend-inner-icon="mdi-magnify"
-        variant="outlined"
-      ></v-text-field>
+      <v-text-field label="Search by name, ID number, or other details..." prepend-inner-icon="mdi-magnify"
+        variant="outlined"></v-text-field>
     </div>
 
     <v-table height="80%" fixed-header class="md:w-[90%] rounded border min-h-[300px]">
       <thead>
-        <tr
-          class="text-lg font-bold"
-          :class="props.themeColor ? `text-[${props.themeColor}]` : 'text-primary'"
-        >
+        <tr class="text-lg font-bold" :class="props.themeColor ? `text-[${props.themeColor}]` : 'text-primary'">
           <th class="text-left">National ID</th>
           <th class="text-left">Name</th>
           <th class="text-left">Date of Birth</th>
@@ -71,22 +58,12 @@
           </td>
           <td>{{ item.last_updated }}</td>
           <td class="flex">
-            <v-btn
-              @click="editCitizen(item)"
-              :color="props.themeColor || 'primary'"
-              variant="text"
-              icon="mdi-pen"
-              title="Edit"
-            ></v-btn>
+            <v-btn @click="editCitizen(item)" :color="props.themeColor || 'primary'" variant="text" icon="mdi-pen"
+              title="Edit"></v-btn>
 
-            <v-btn
-              v-if="item.alive && route.path == '/rita-interface'"
-              @click="certifyDeath(item)"
-              :color="props.themeColor || 'red'"
-              variant="text"
-              icon="mdi-certificate-outline"
-              title="Issue Death Certificate"
-            ></v-btn>
+            <v-btn v-if="item.alive && route.path == '/rita-interface'" @click="certifyDeath(item)"
+              :color="props.themeColor || 'red'" variant="text" icon="mdi-certificate-outline"
+              title="Issue Death Certificate"></v-btn>
           </td>
         </tr>
       </tbody>

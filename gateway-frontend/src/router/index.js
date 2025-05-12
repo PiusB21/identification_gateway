@@ -1,6 +1,6 @@
 import LandingLayout from '@/views/landing/LandingLayout.vue'
 import authLayout from '@/views/authentication/authLayout.vue'
-
+import { getState } from '@/utils/contractService'
 import { createRouter, createWebHistory } from 'vue-router'
 import AdminLayout from '@/views/admin/adminLayout.vue'
 import DashboardView from '@/views/admin/DashboardView.vue'
@@ -92,6 +92,43 @@ const router = createRouter({
       ],
     },
   ],
+})
+
+router.beforeEach((to, from, next) => {
+  if (to.meta.requiresMetaMask && !getState('signer')) {
+    console.log('passes here')
+    next('/')
+    notifyError('You are not Connected')
+    return
+  } else if (
+    ['Admin Dashboard', 'Institutions', 'API Requests', 'Admin Account'].includes(to.name) &&
+    !(getState('role') == 'admin')
+  ) {
+    console.log('here 1')
+
+    next('/')
+    notifyError('You are not Authorized')
+    return
+  } else if (
+    ['Citizen Data', 'Rita Interface', 'Nida Interface'].includes(to.name) &&
+    !(getState('role') == 'admin') &&
+    !(getState('role') == 'nida') &&
+    !(getState('role') == 'rita')
+  ) {
+    console.log('herer 2')
+
+    next('/')
+    notifyError('You are not Authorized')
+    return
+  }
+
+  // else if(['Registered Users'].includes(to.name)&& !(getState('role')=='prosecutor')){
+  //     next('/');
+  //     notifyError("You are not Authenticated")
+  //     return;
+  // }
+
+  next()
 })
 
 export default router

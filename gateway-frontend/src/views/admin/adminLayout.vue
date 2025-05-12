@@ -1,7 +1,9 @@
 <script setup>
 import { ref } from 'vue'
+import { logout } from '@/utils/contractService';
 
 const drawer = ref(false)
+
 </script>
 
 <template>
@@ -25,40 +27,25 @@ const drawer = ref(false)
               <!-- Custom title -->
             </template>
           </v-list-item>
-          <v-list-item
-            to="/institutions"
-            prepend-icon="mdi-bank"
-            title="Institutions"
-            value="Institutions"
-          >
+          <v-list-item to="/institutions" prepend-icon="mdi-bank" title="Institutions" value="Institutions">
             <template v-slot:title>
               <span class="text-lg">Institutions</span>
               <!-- Custom title -->
             </template>
           </v-list-item>
-          <v-list-item to="/api-keys" prepend-icon="mdi-key" title="api-keys" value="api-keys">
+          <!-- <v-list-item to="/api-keys" prepend-icon="mdi-key" title="api-keys" value="api-keys">
             <template v-slot:title>
               <span class="text-lg">API Keys</span>
-              <!-- Custom title -->
             </template>
-          </v-list-item>
-          <v-list-item
-            to="/api-requests"
-            prepend-icon="mdi-link-variant"
-            title="api-requests"
-            value="api-requests"
-          >
+          </v-list-item> -->
+          <v-list-item to="/api-requests" prepend-icon="mdi-file-document-edit-outline" title="api-requests"
+            value="api-requests">
             <template v-slot:title>
-              <span class="text-lg">API Requests</span>
+              <span class="text-lg">Logs</span>
               <!-- Custom title -->
             </template>
           </v-list-item>
-          <v-list-item
-            to="/citizen-data"
-            prepend-icon="mdi-database"
-            title="citizen-data"
-            value="citizen-data"
-          >
+          <v-list-item to="/citizen-data" prepend-icon="mdi-database" title="citizen-data" value="citizen-data">
             <template v-slot:title>
               <span class="text-lg">Citizen Data</span>
               <!-- Custom title -->
@@ -73,13 +60,9 @@ const drawer = ref(false)
             <div class="text-xl font-bold text-gray-800">Gateway Portal</div>
           </v-toolbar-title>
 
-          <v-app-bar-nav-icon
-            class="opacity-0"
-            variant="text"
-            @click.stop="drawer = !drawer"
-          ></v-app-bar-nav-icon>
+          <v-app-bar-nav-icon class="opacity-0" variant="text" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
 
-          <v-btn color="primary" icon="mdi-logout" title="Logout" variant="outlined"></v-btn>
+          <v-btn @click="logout()" color="primary" icon="mdi-logout" title="Logout" variant="outlined"></v-btn>
         </v-app-bar>
         <div class="h-full w-full overflow-y-auto">
           <router-view></router-view>
