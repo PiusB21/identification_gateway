@@ -1,146 +1,164 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.25;
+pragma solidity ^0.8.9;
 
 contract IdentityGateway {
-    //State variables
-    address public i_owner;
-
-    struct Institution {
-        address institutionAdress;
-        string abbreviation;
-        string institutionType;
-        string institutionName;
-    }
+    address public _contractOwner;
 
     struct Citizen {
+        
+        bool citizenStatus; // true if alive, false if dead
         string firstName;
         string middleName;
         string lastName;
-        address citizenId;
+        string citizenId;
         string gender;
         string dateofBirth;
-        string[] identities;
-        bool citizenStatus;
     }
 
-    //struct of institution operators
-    struct Operators {
-        string name;
-        address operatorAddress;
-        string organization;
-        string position;
-    }
-
-    struct Identites {
+    struct Identity {
         string idType;
         string documentCid;
+    }
+
+    struct Operator {
+        address operatorAddress;
+        string firstName;
+        string lastName;
+        string position;
+        string organisation;
     }
 
     struct Users {
         address userAddress;
         string userType;
     }
-    //Arrays
 
-    Identites[] public arrayofIdentities;
-    Operators[] public operatorsArray;
-    Institution[] institutionArray;
-    Citizen[] citizenArray;
-
-    //checking if the organization is available
-    function isAvailable(address _institutionAdress) public view returns (bool) {
-        bool results = false;
-        for (uint256 i; i < institutionArray.length; i++) {
-            if (institutionArray[i].institutionAdress == _institutionAdress) {
-                results = true;
-            }
-        }
-        return results;
+    struct Transaction {
+        string action;
+        address performedBy;
+        uint256 timestamp;
+        bool status;
     }
 
-    //mappings
-    mapping(address => Institution) public organizationAvailable;
-    mapping(address => Operators) public operators;
-    mapping(address => Citizen) public citizensMapping;
-    mapping(string => Identites) public identityMapping;
-    //map to store users and their type of user
+    struct DeathCertificate {
+        string causeOfDeath;
+        string dOB;
+        address registerBY;
+        string citizenID;
+    }
+
+    DeathCertificate[] public deathCertificateArray;
+    Citizen[] public citizenArray;
+    Operator[] public operatorArray;
+    Identity[] public identityArray;
+    Users[] public userArray;
+    Transaction[] public transactionsArray;
+
+    //mappings to store users and their type of user
+    mapping(address => Citizen) public citizenMapping;
+    mapping(string => DeathCertificate) public deathcertificateMapping;
     mapping(address => Users) public userMapping;
+    mapping(address => Operator) public operatorMapping;
+    mapping(string => address) private fingerprintToUser; // A mapping from a Fingerprint to its corresponding Address
 
     constructor() {
-        i_owner = msg.sender;
+        _contractOwner = msg.sender;
     }
 
     //ADDING OPERATORS TO OPERATOR ARRAY
     function addOperator(
-        string memory _name,
+        string memory _firstName,
+        string memory _lastName,
         address _operatorAddress,
-        string memory _organization,
-        string memory _position
+        string memory _position,
+        string memory _organisation
     ) public {
-        // Operators memory newUser = Operators({
-
-        operators[_operatorAddress].name = _name;
-        operators[_operatorAddress].operatorAddress = _operatorAddress;
-        operators[_operatorAddress].organization = _organization;
-        operators[_operatorAddress].position = _position;
-
-        operatorsArray.push(operators[_operatorAddress]);
-    }
-
-    //GETTING THE LIST OF OPERATORS
-
-    function getAllOperators() public view returns (Operators[] memory) {
-        return operatorsArray;
-    }
-
-    //ADDING ORGANIZATION
-    function addOrganiztion(
-        string memory _institutionName,
-        address _institutionAddress,
-        string memory _abbreviation,
-        string memory _institutionType
-    ) public {
-        Institution memory newUser = Institution({
-            institutionName: _institutionName,
-            institutionAdress: _institutionAddress,
-            institutionType: _institutionType,
-            abbreviation: _abbreviation
+        Operator memory newOperator = Operator({
+            firstName: _firstName,
+            lastName: _lastName,
+            operatorAddress: _operatorAddress,
+            position: _position,
+            organisation: _organisation
         });
-        institutionArray.push(newUser);
+
+        Users memory newUser = Users({
+            userAddress: _operatorAddress,
+            userType: "operator"
+        });
+        userMapping[_operatorAddress].userType = "operator";
+        userArray.push(newUser);
+        operatorMapping[_operatorAddress] = newOperator;
+        operatorArray.push(newOperator);
+        addTransaction("Added Operator", msg.sender);
     }
 
-    //Getting Institution
-    function getAllInstitution() public view returns (Institution[] memory) {
-        return institutionArray;
-    }
-
-    //adding citizens to citizens array
     function addCitizen(
         string memory _firstName,
         string memory _middleName,
         string memory _lastName,
-        address _citizenId,
+        address _citizenAddress,
         string memory _gender,
-        string memory _dateofBirth // string memory documentCID
+        string memory _dateofBirth,
+        string memory _citizenId
     ) public {
-        Citizen memory newUser = Citizen({
-            firstName: _firstName,
+        Citizen memory newCitizen = Citizen({
+            firstName: _firstName, //citizen name
             middleName: _middleName,
             lastName: _lastName,
-            citizenId: _citizenId,
             gender: _gender,
             dateofBirth: _dateofBirth,
-            citizenStatus: true,
-            identities: new string[](0)
+            citizenId: _citizenId,
+            citizenStatus: true
         });
-        citizenArray.push(newUser);
-        // addIdentity(_userAddress, documentCID);
+
+        citizenMapping[_citizenAddress] = newCitizen;
+        citizenArray.push(newCitizen);
+        addTransaction("Added citizen", msg.sender);
+    }
+
+    function issueDeathCertificate(
+        string memory _causeOfDeath,
+        string memory _dOB,
+        address _registerBY,
+        string memory _citizenID
+    ) public {
+        DeathCertificate memory newDeath = DeathCertificate({
+            causeOfDeath: _causeOfDeath,
+            dOB: _dOB,
+            registerBY: _registerBY,
+            citizenID: _citizenID
+        });
+
+        deathCertificateArray.push(newDeath);
+        deathcertificateMapping[_citizenID] = newDeath;
+        announceDeath(_citizenID);
+        addTransaction("Issued DeathCertificate", msg.sender);
+    }
+
+    // Function to add a new transaction
+    function addTransaction(string memory _action, address _userAddress)
+        internal
+    {
+        Transaction memory newTransaction = Transaction({
+            action: _action,
+            performedBy: _userAddress,
+            timestamp: block.timestamp,
+            status: true
+        });
+        transactionsArray.push(newTransaction);
     }
 
     // Find the index of the user in the usersArray
-    function findUserIndex(address _citizenId) internal view returns (uint256) {
+    function findUserIndex(string memory _citizenId)
+        internal
+        view
+        returns (uint256)
+    {
         for (uint256 i = 0; i < citizenArray.length; i++) {
-            if (citizenArray[i].citizenId == _citizenId) {
+            if (
+                keccak256(bytes(citizenArray[i].citizenId)) ==
+                keccak256(bytes(_citizenId))
+            ) {
                 return i;
             }
         }
@@ -148,29 +166,34 @@ contract IdentityGateway {
     }
 
     // Announce the death of a citizen (set their status to false)
-    function announceDeath(address _citizenId) public {
+    function announceDeath(string memory _citizenId) public {
         uint256 index = findUserIndex(_citizenId);
         citizenArray[index].citizenStatus = false;
     }
 
     // Check if a citizen is alive (true) or dead (false)
-    function isCitizenAlive(address _citizenId) public view returns (bool) {
+    function isCitizenAlive(string memory _citizenId)
+        public
+        view
+        returns (bool)
+    {
         uint256 index = findUserIndex(_citizenId);
         return citizenArray[index].citizenStatus;
     }
 
-    modifier onlyAuthorized() {
-        require(isAvailable(msg.sender), "Not authorized institution");
-        _;
+    function getAllOperators() public view returns (Operator[] memory) {
+        return operatorArray;
     }
 
-    address public loggedInUser;
-
-    function Login(address userAddress) public view returns (string memory) {
-        return userMapping[userAddress].userType;
+    function getAllCitizens() public view returns (Citizen[] memory) {
+        return citizenArray;
     }
 
-    function logout() external {
-        loggedInUser = address(0);
+    function getAllTransactions() public view returns (Transaction[] memory) {
+        return transactionsArray;
+    }
+
+    function Login(address _userAddress) public view returns (string memory) {
+        return operatorMapping[_userAddress].organisation;
     }
 }
