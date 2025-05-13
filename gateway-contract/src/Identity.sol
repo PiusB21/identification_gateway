@@ -47,8 +47,16 @@ contract IdentityGateway {
         string citizenID;
     }
 
+    struct Institution{
+        string instutionName;
+        string abbreviation;
+        string orgType;
+        address orgAddress;
+    }
+
     DeathCertificate[] public deathCertificateArray;
     Citizen[] public citizenArray;
+    Institution[] public institutionArray;
     Operator[] public operatorArray;
     Identity[] public identityArray;
     Users[] public userArray;
@@ -57,6 +65,7 @@ contract IdentityGateway {
     //mappings to store users and their type of user
     mapping(address => Citizen) public citizenMapping;
     mapping(string => DeathCertificate) public deathcertificateMapping;
+    mapping (string => Institution) public  institutionMapping;
     mapping(address => Users) public userMapping;
     mapping(address => Operator) public operatorMapping;
     mapping(string => address) private fingerprintToUser; // A mapping from a Fingerprint to its corresponding Address
@@ -64,6 +73,26 @@ contract IdentityGateway {
     constructor() {
         _contractOwner = msg.sender;
     }
+
+    //ADDING INSTITUTION
+    function addInstitution (
+        string memory _instutionName,
+        address _orgAddress,
+        string memory _orgType, 
+        string memory _abbreviation) public {
+        Institution memory newOrg = Institution({
+            instutionName:_instutionName,
+            abbreviation: _abbreviation,
+            orgType: _orgType,
+            orgAddress: _orgAddress
+        });
+
+        institutionArray.push(newOrg);
+        institutionMapping[_abbreviation]=newOrg;
+        addTransaction("Added Institution", msg.sender);
+
+    }
+
 
     //ADDING OPERATORS TO OPERATOR ARRAY
     function addOperator(
@@ -179,6 +208,10 @@ contract IdentityGateway {
     {
         uint256 index = findUserIndex(_citizenId);
         return citizenArray[index].citizenStatus;
+    }
+
+    function getAllInstitution() public  view returns (Institution[] memory){
+        return institutionArray;
     }
 
     function getAllOperators() public view returns (Operator[] memory) {
