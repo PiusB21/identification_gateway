@@ -4,7 +4,7 @@ import router from '@/router'
 import { notifyError, notifySuccess } from './notificationService'
 
 //CONTRACT AND WALLET RELATED
-const contractAddress = '0x0780A2B7ecA179b529568F22555f9299Bc44E6Da'
+const contractAddress = '0x2Ce2C24c1A46f5eB68eD4EfCE674c4F9f788d4B4'
 const INFURA_API_KEY = '39274895cec54a43bc080c087a46ce9e'
 
 export const getProvider = () => {
