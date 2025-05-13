@@ -65,12 +65,13 @@ const convertToDateObject = (dateString) => {
 const registerInstitution = async () => {
   isLoading.value = true
   const { contract } = await getSignerContract()
-  await contract.addOrganiztion(instData.value.name, instData.value.address, instData.value.abbrev, instData.value.instType);
+  await contract.addInstitution(instData.value.name, instData.value.address, instData.value.instType, instData.value.abbrev);
+  await contract.addOperator('operator', 'operator', instData.value.address, 'operator', instData.value.abbrev)
   isLoading.value = false
   emit('close')
-
 }
 
 
+//0xe974DB6b5832bfc0228b5b15167cC588454AD048
 
 </script>

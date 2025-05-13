@@ -4,7 +4,7 @@
       <div class="w-[90%] mx-auto text-3xl flex justify-between">
         <div>NIDA</div>
         <v-btn
-          @click="router.push('nida')"
+          @click="logout()"
           color="white"
           icon="mdi-logout"
           title="Logout"
@@ -22,6 +22,7 @@
 import { ref } from 'vue'
 import CitizenData from '../admin/CitizenData.vue'
 import { useRouter } from 'vue-router'
+import {logout} from "@/utils/contractService.js"
 
 const router = useRouter()
 const searchedId = ref('')

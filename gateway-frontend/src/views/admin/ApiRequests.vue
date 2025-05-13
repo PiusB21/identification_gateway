@@ -36,7 +36,7 @@
       </div>
     </div>
 
-    <v-table height="80%" fixed-header class="md:w-[80%] rounded border min-h-[300px]">
+    <v-table height="80%" fixed-header class="md:w-[80%] rounded border min-h-[300px] relative">
       <thead>
         <tr class="text-lg font-bold">
           <th class="text-left">Institution</th>
@@ -46,12 +46,13 @@
           <th class="text-left">Time</th>
         </tr>
       </thead>
+      <Loader class=" w-full absolute flex items-center justify-center" v-if="isLoading" :color="'stroke-blue-600'" />
       <tbody>
-        <tr class="text-[15px] lg:text-lg" v-for="item in desserts" :key="item.name">
+        <tr class="text-[15px] lg:text-lg" v-for="(item, index) in logs" :key="index">
           <td>
             <div class="flex flex-row gap-2 items-center font-sans">
               <div class="">{{ item.name }}</div>
-              <div class="text-gray-500 text-[13px]">{{ item.abbrev }}</div>
+              <div class="text-gray-500 text-[13px]">{{ item.performedBy }}</div>
             </div>
           </td>
           <td>
@@ -71,19 +72,17 @@
           </td> -->
           <td>
             <div :class="[
-              item.status == 'success' ? 'text-green-700' : '',
-              item.status == 'failed' ? 'text-red-700' : '',
-              item.status == 'unauthorized' ? 'text-yellow-700' : '',
+              item.status ? 'text-green-700' : 'text-red-700',
             ]">
-              <v-icon v-if="item.status == 'success'" variant="outlined" icon="mdi-check"></v-icon>
-              <v-icon v-if="item.status == 'failed'" variant="outlined" icon="mdi-close"></v-icon>
-              <v-icon v-if="item.status == 'unauthorized'" variant="outlined" icon="mdi-exclamation"></v-icon>
+              <v-icon v-if="item.status" variant="outlined" icon="mdi-check"></v-icon>
+              <v-icon v-else variant="outlined" icon="mdi-close"></v-icon>
+              <!-- <v-icon v-if="item.status == 'unauthorized'" variant="outlined" icon="mdi-exclamation"></v-icon> -->
 
-              {{ item.status }}
+              {{ item.status ? 'Successful' : 'Failed' }}
             </div>
           </td>
 
-          <td>{{ item.time }}</td>
+          <td>{{ getDate(item.timestamp) }}</td>
         </tr>
       </tbody>
     </v-table>
@@ -91,7 +90,25 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
+import { getDate, getViewerContract } from '@/utils/contractService'
+import Loader from '@/components/Loader.vue'
+
+const isLoading = ref(false)
+const logs = ref([])
+
+const getLogs = async () => {
+  const { contract } = await getViewerContract()
+  logs.value = await contract.getAllTransactions()
+  console.log(logs.value);
+
+}
+
+onMounted(async () => {
+  isLoading.value = true
+  await getLogs()
+  isLoading.value = false
+})
 
 const instFilter = ref({
   all: true,

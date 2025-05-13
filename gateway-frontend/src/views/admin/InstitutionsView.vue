@@ -1,6 +1,6 @@
 <template>
   <v-overlay v-model="overlay" class="flex items-center justify-center">
-    <AddInstitutionForm @close="overlay = false" />
+    <AddInstitutionForm @close="reload()" />
   </v-overlay>
   <section class="bg-[var(--sec)] h-full flex flex-col items-center gap-4 pb-20">
     <div class="flex justify-between w-full md:w-[80%] py-8 rounded">
@@ -37,7 +37,7 @@
       <v-text-field label="Search institutions" prepend-inner-icon="mdi-magnify" variant="outlined"></v-text-field>
     </div>
 
-    <v-table height="80%" fixed-header class="md:w-[80%] rounded border min-h-[50vh]">
+    <v-table height="80%" fixed-header class="md:w-[80%] rounded border min-h-[50vh] relative">
       <thead>
         <tr class="text-lg font-bold">
           <th class="text-left">Institution</th>
@@ -48,24 +48,25 @@
           <th class="text-left">Actions</th>
         </tr>
       </thead>
+      <Loader class=" w-full absolute flex items-center justify-center" v-if="isLoading" :color="'stroke-blue-600'" />
       <tbody>
-        <tr v-for="item in institutions" :key="item.institutionName">
+        <tr v-for="item in institutions" :key="item.instutionName">
           <td>
             <div class="flex flex-row gap-2 items-center font-sans">
               <div
                 class="bg-[var(--sec)] text-[var(--pri)] text-xl w-8 h-8 rounded p-2 flex justify-center items-center text-nowrap">
-                {{ item.institutionName[0] }}
+                {{ item.instutionName[0] }}
               </div>
               <div class="flex flex-col">
-                <div class="whitespace-nowrap">{{ item.institutionName }}</div>
+                <div class="whitespace-nowrap">{{ item.instutionName }}</div>
                 <div class="text-gray-500 text-[13px]">{{ item.abbreviation }}</div>
               </div>
             </div>
           </td>
-          <td>{{ item.institutionAdress }}</td>
+          <td>{{ item.orgAddress }}</td>
           <td>
             <div class="h-fit w-34 border px-3 py-1 text-center rounded-full text-[12px] font-semibold">
-              {{ item.institutionType }}
+              {{ item.orgType }}
             </div>
           </td>
 
@@ -86,7 +87,10 @@
 import { onMounted, ref } from 'vue'
 import AddInstitutionForm from './AddInstitutionForm.vue'
 import { confirmAlert, confirmationAlert } from '@/utils/notificationService'
-import { getViewerContract } from '@/utils/contractService'
+import { getViewerContract, getSignerContract } from '@/utils/contractService'
+import Loader from '@/components/Loader.vue'
+
+const isLoading = ref(false)
 
 const overlay = ref(false)
 
@@ -112,6 +116,12 @@ const switchInst = (inst) => {
   if (inst == 'academic') instFilter.value.academic = true
 }
 
+
+const reload = () => {
+  overlay = false
+  setTimeout(() => getInstitutions, 3000)
+}
+
 const institutions = ref([])
 
 const getInstitutions = async () => {
@@ -121,7 +131,10 @@ const getInstitutions = async () => {
 
 }
 
-onMounted(() => {
-  getInstitutions()
+
+onMounted(async () => {
+  isLoading.value = true
+  await getInstitutions()
+  isLoading.value = false
 })
 </script>

@@ -4,7 +4,7 @@
       <div class="w-[90%] mx-auto text-3xl flex justify-between">
         <div>NHIF</div>
         <v-btn
-          @click="router.push('bima')"
+          @click="logout()"
           color="white"
           icon="mdi-logout"
           title="Logout"
@@ -56,6 +56,7 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import {logout} from "@/utils/contractService.js"
 
 const router = useRouter()
 const searchedId = ref('')

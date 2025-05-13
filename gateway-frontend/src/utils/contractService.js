@@ -72,7 +72,23 @@ export const login = async () => {
     notifyError('Unauthorized User')
     return
   }
+
+  if (userType.toLowerCase().includes('nhif')) {
+    router.push('/bima-interface')
+    return
+  }
+
+  if (userType.toLowerCase().includes('rita')) {
+    router.push('/rita-interface')
+    return
+  }
+
+  if (userType.toLowerCase().includes('nida')) {
+    router.push('/rita-interface')
+    return
+  }
 }
+
 export const logout = () => {
   localStorage.clear()
   router.push('/')

@@ -27,27 +27,28 @@
           <th class="text-left">Name</th>
           <th class="text-left">Date of Birth</th>
           <th class="text-left">Gender</th>
-          <th class="text-left">Location</th>
+          <!-- <th class="text-left">Location</th> -->
           <th class="text-left">Life Status</th>
-          <th class="text-left">Last Updated</th>
+          <!-- <th class="text-left">Last Updated</th> -->
           <th class="text-left">Actions</th>
         </tr>
       </thead>
+      <Loader class=" w-full absolute flex items-center justify-center" v-if="isLoading" :color="'stroke-blue-600'" />
       <tbody>
-        <tr class="text-[15px] lg:text-lg" v-for="item in citizenData" :key="item.name">
+        <tr class="text-[15px] lg:text-lg" v-for="item in citizens" :key="item.citizenId">
           <td class="font-semibold text-gray-700">
-            {{ item.national_id }}
+            {{ item.national_id || '-' }}
           </td>
-          <td>{{ item.fname }}&nbsp;{{ item.lname }}</td>
+          <td>{{ item.firstName }}&nbsp;{{ item.lastName }}</td>
           <td>
-            {{ item.dob }}
+            {{ formatDate(item.dateofBirth) }}
           </td>
           <td>
             {{ item.gender }}
           </td>
-          <td>{{ item.district }},&nbsp;{{ item.region }}</td>
+          <!-- <td>{{ item.district }},&nbsp;{{ item.region }}</td> -->
           <td class="tracking-wide">
-            <div v-if="item.alive" class="flex gap-2">
+            <div v-if="item.citizenStatus" class="flex gap-2">
               <v-icon class="bg-green-700" icon="mdi-check" color="white"></v-icon>
               <div class="text-green-700">ALIVE</div>
             </div>
@@ -56,7 +57,7 @@
               <div class="text-red-700">DECEASED</div>
             </div>
           </td>
-          <td>{{ item.last_updated }}</td>
+          <!-- <td>{{ item.last_updated }}</td> -->
           <td class="flex">
             <v-btn @click="editCitizen(item)" :color="props.themeColor || 'primary'" variant="text" icon="mdi-pen"
               title="Edit"></v-btn>
@@ -72,11 +73,13 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import AddCitizenForm from './AddCitizenForm.vue'
 import { confirmAlert } from '@/utils/notificationService'
-
+import { getViewerContract } from '@/utils/contractService'
+import Loader from '@/components/Loader.vue'
+const isLoading = ref(false)
 const overlay = ref(false)
 
 const route = useRoute()
@@ -92,6 +95,14 @@ const editCitizen = (citizen) => {
   overlay.value = true
 }
 
+const citizens = ref([])
+
+const getCitizens = async () => {
+  const { contract } = await getViewerContract()
+  citizens.value = await contract.getAllCitizens()
+  console.log(citizens.value);
+}
+
 const certifyDeath = async (person) => {
   const response = await confirmAlert(
     `You are issuing a death certificate to
@@ -104,6 +115,18 @@ const certifyDeath = async (person) => {
     )
     citizenData.value[indexOfDeceased].alive = false
   }
+}
+onMounted(async () => {
+  isLoading.value = true
+  await getCitizens()
+  isLoading.value = false
+})
+
+
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  const formatted = date.toDateString().split(' ').slice(1).join(' ');
+  return formatted
 }
 
 const citizenData = ref([
