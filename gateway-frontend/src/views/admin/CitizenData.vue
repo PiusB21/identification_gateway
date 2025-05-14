@@ -37,7 +37,7 @@
       <tbody>
         <tr class="text-[15px] lg:text-lg" v-for="item in citizens" :key="item.citizenId">
           <td class="font-semibold text-gray-700">
-            {{ item.national_id || '-' }}
+            {{ item.citizenId || '-' }}
           </td>
           <td>{{ item.firstName }}&nbsp;{{ item.lastName }}</td>
           <td>
