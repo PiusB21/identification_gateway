@@ -5,14 +5,15 @@ contract IdentityGateway {
     address public _contractOwner;
 
     struct Citizen {
-        
         bool citizenStatus; // true if alive, false if dead
         string firstName;
+        string birthCertificateNo;
         string middleName;
         string lastName;
         string citizenId;
         string gender;
         string dateofBirth;
+        string healthInsuarance;
     }
 
     struct Identity {
@@ -47,7 +48,7 @@ contract IdentityGateway {
         string citizenID;
     }
 
-    struct Institution{
+    struct Institution {
         string instutionName;
         string abbreviation;
         string orgType;
@@ -63,36 +64,47 @@ contract IdentityGateway {
     Transaction[] public transactionsArray;
 
     //mappings to store users and their type of user
-    mapping(address => Citizen) public citizenMapping;
+    mapping(string => Citizen) public citizenMapping;
     mapping(string => DeathCertificate) public deathcertificateMapping;
-    mapping (string => Institution) public  institutionMapping;
+    mapping(string => Institution) public institutionMapping;
     mapping(address => Users) public userMapping;
     mapping(address => Operator) public operatorMapping;
     mapping(string => address) private fingerprintToUser; // A mapping from a Fingerprint to its corresponding Address
+    mapping(string => uint256) private citizenIndexMapping;
 
     constructor() {
         _contractOwner = msg.sender;
     }
 
     //ADDING INSTITUTION
-    function addInstitution (
+    function addInstitution(
         string memory _instutionName,
         address _orgAddress,
-        string memory _orgType, 
-        string memory _abbreviation) public {
+        string memory _orgType,
+        string memory _abbreviation
+    ) public {
         Institution memory newOrg = Institution({
-            instutionName:_instutionName,
+            instutionName: _instutionName,
             abbreviation: _abbreviation,
             orgType: _orgType,
             orgAddress: _orgAddress
         });
 
         institutionArray.push(newOrg);
-        institutionMapping[_abbreviation]=newOrg;
+        institutionMapping[_abbreviation] = newOrg;
         addTransaction("Added Institution", msg.sender);
-
     }
 
+    function issueCitizenId(string memory _birthCertificateNo, string memory _citizenId) public {
+    // Update in mapping
+    citizenMapping[_birthCertificateNo].citizenId = _citizenId;
+
+    // Efficient update in array using index mapping
+    uint256 index = citizenIndexMapping[_birthCertificateNo];
+    citizenArray[index].citizenId = _citizenId;
+
+    addTransaction("Issued Citizen ID", msg.sender);
+}
 
     //ADDING OPERATORS TO OPERATOR ARRAY
     function addOperator(
@@ -124,24 +136,26 @@ contract IdentityGateway {
     function addCitizen(
         string memory _firstName,
         string memory _middleName,
+        string memory _birthCertificateNo,
         string memory _lastName,
-        address _citizenAddress,
         string memory _gender,
-        string memory _dateofBirth,
-        string memory _citizenId
+        string memory _dateofBirth
     ) public {
         Citizen memory newCitizen = Citizen({
             firstName: _firstName, //citizen name
             middleName: _middleName,
+            birthCertificateNo: _birthCertificateNo,
             lastName: _lastName,
             gender: _gender,
             dateofBirth: _dateofBirth,
-            citizenId: _citizenId,
-            citizenStatus: true
+            citizenId: "",
+            citizenStatus: true,
+            healthInsuarance: ""
         });
 
-        citizenMapping[_citizenAddress] = newCitizen;
+        citizenMapping[_birthCertificateNo] = newCitizen;
         citizenArray.push(newCitizen);
+        citizenIndexMapping[_birthCertificateNo] = citizenArray.length - 1; // Save index
         addTransaction("Added citizen", msg.sender);
     }
 
@@ -210,8 +224,17 @@ contract IdentityGateway {
         return citizenArray[index].citizenStatus;
     }
 
-    function getAllInstitution() public  view returns (Institution[] memory){
+    function getAllInstitution() public view returns (Institution[] memory) {
         return institutionArray;
+    }
+
+    //get particular citizen data
+    function getCitizenData(string memory _birthCertificateNo)
+        public
+        view
+        returns (Citizen memory)
+    {
+        return citizenMapping[_birthCertificateNo];
     }
 
     function getAllOperators() public view returns (Operator[] memory) {
