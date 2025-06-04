@@ -191,6 +191,19 @@ contract IdentityGateway {
         transactionsArray.push(newTransaction);
     }
 
+    function issueBima(string memory _birthCertificateNo, string memory _healthInsuarance) internal  {
+       // Update in mapping
+    citizenMapping[_birthCertificateNo].healthInsuarance = _healthInsuarance;
+
+    // Efficient update in array using index mapping
+    uint256 index = citizenIndexMapping[_birthCertificateNo];
+    citizenArray[index].healthInsuarance = _healthInsuarance;
+
+    addTransaction("Issued Bima", msg.sender);
+    }
+
+
+
     // Find the index of the user in the usersArray
     function findUserIndex(string memory _citizenId)
         internal
@@ -207,6 +220,22 @@ contract IdentityGateway {
         }
         revert("User not found");
     }
+
+   function checkHealthInsuranceStatusByNumber(string memory _healthInsuranceNumber) public view returns (bool) {
+    for (uint256 i = 0; i < citizenArray.length; i++) {
+        if (keccak256(bytes(citizenArray[i].healthInsuarance)) == keccak256(bytes(_healthInsuranceNumber))) {
+            if (citizenArray[i].citizenStatus) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+    revert("Health insurance number not found");
+}
+
+
+    
 
     // Announce the death of a citizen (set their status to false)
     function announceDeath(string memory _citizenId) public {
