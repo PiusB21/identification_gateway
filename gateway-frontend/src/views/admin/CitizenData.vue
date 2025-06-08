@@ -10,8 +10,8 @@
         <div class="text-2xl">Citizen Data</div>
         <div class="text-gray-500 text-[13px]">Search and manage citizen information</div>
       </div>
-      <v-btn @click="overlay = true" flat :color="props.themeColor || 'primary'" prepend-icon="mdi-account-plus">
-        ADD CITIZEN
+      <v-btn  @click="overlay = true" flat :color="props.themeColor || 'primary'" prepend-icon="mdi-account-plus">
+        ADD CITIZEN {{ getState('role') }}
       </v-btn>
     </div>
 
@@ -73,14 +73,18 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
+import { onMounted, ref,computed } from 'vue'
 import { useRoute } from 'vue-router'
 import AddCitizenForm from './AddCitizenForm.vue'
 import { confirmAlert } from '@/utils/notificationService'
-import { getViewerContract } from '@/utils/contractService'
+import { getViewerContract,getState } from '@/utils/contractService'
 import Loader from '@/components/Loader.vue'
+import {useGatewayStore} from "@/stores/gateway.js"
+
+const store = useGatewayStore()
 const isLoading = ref(false)
 const overlay = ref(false)
+const citizens = computed(()=>store.state.citizens)
 
 const route = useRoute()
 
@@ -89,19 +93,10 @@ const props = defineProps(['themeColor'])
 const editedCitizen = ref(null)
 
 const editCitizen = (citizen) => {
-  console.log(citizen)
-
   editedCitizen.value = citizen
   overlay.value = true
 }
 
-const citizens = ref([])
-
-const getCitizens = async () => {
-  const { contract } = await getViewerContract()
-  citizens.value = await contract.getAllCitizens()
-  console.log(citizens.value);
-}
 
 const certifyDeath = async (person) => {
   const response = await confirmAlert(
@@ -118,7 +113,7 @@ const certifyDeath = async (person) => {
 }
 onMounted(async () => {
   isLoading.value = true
-  await getCitizens()
+  await store.getCitizens()
   isLoading.value = false
 })
 

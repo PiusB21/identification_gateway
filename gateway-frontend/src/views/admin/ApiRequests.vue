@@ -11,20 +11,20 @@
 
       <div class="grid grid-cols-3 gap-8">
         <div class="flex flex-row gap-8 bg-gray-200 w-fit px-2 py-2 rounded h-fit">
-          <div @click="switchInst('all')" :class="instFilter.all ? 'bg-white px-1 rounded shadow' : ''"
+          <div @click="switchInst('all')" :class="status.all ? 'bg-white px-1 rounded shadow' : ''"
             class="cursor-pointer transition-all duration-200 ease-in">
             All Requests
           </div>
-          <div @click="switchInst('successful')" :class="instFilter.successful ? 'bg-white px-1 rounded shadow' : ''"
+          <div @click="switchInst('successful')" :class="status.successful ? 'bg-white px-1 rounded shadow' : ''"
             class="cursor-pointer transition-all duration-200 ease-in">
             Successful
           </div>
-          <div @click="switchInst('failed')" :class="instFilter.failed ? 'bg-white px-1 rounded shadow' : ''"
+          <div @click="switchInst('failed')" :class="status.failed ? 'bg-white px-1 rounded shadow' : ''"
             class="cursor-pointer transition-all duration-200 ease-in">
             Failed
           </div>
           <div @click="switchInst('unauthorized')"
-            :class="instFilter.unauthorized ? 'bg-white px-1 rounded shadow' : ''"
+            :class="status.unauthorized ? 'bg-white px-1 rounded shadow' : ''"
             class="cursor-pointer transition-all duration-200 ease-in">
             Unauthorized
           </div>
@@ -90,77 +90,40 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { getDate, getViewerContract } from '@/utils/contractService'
 import Loader from '@/components/Loader.vue'
+import {useGatewayStore} from "@/stores/gateway.js"
 
+const store = useGatewayStore()
 const isLoading = ref(false)
-const logs = ref([])
+const logs = computed(()=>store.state.logs)
 
-const getLogs = async () => {
-  const { contract } = await getViewerContract()
-  logs.value = await contract.getAllTransactions()
-  console.log(logs.value);
-
-}
 
 onMounted(async () => {
   isLoading.value = true
-  await getLogs()
+  await store.getLogs()
   isLoading.value = false
 })
 
-const instFilter = ref({
+const status = ref({
   all: true,
   successful: false,
   failed: false,
   unauthorized: false,
 })
 
-const switchInst = (inst) => {
-  ; (instFilter.value.all = false),
-    (instFilter.value.successful = false),
-    (instFilter.value.failed = false),
-    (instFilter.value.unauthorized = false)
+const switchInst = (stat) => {
+  (status.value.all = false),
+  (status.value.successful = false),
+  (status.value.failed = false),
+  (status.value.unauthorized = false)
 
-  if (inst == 'all') instFilter.value.all = true
-  if (inst == 'successful') instFilter.value.successful = true
-  if (inst == 'failed') instFilter.value.failed = true
-  if (inst == 'unauthorized') instFilter.value.unauthorized = true
+  if (stat == 'all') status.value.all = true
+  if (stat == 'successful') status.value.successful = true
+  if (stat == 'failed') status.value.failed = true
+  if (stat == 'unauthorized') status.value.unauthorized = true
 }
 
-const desserts = [
-  {
-    name: 'National Identification Agency',
-    abbrev: 'NIDA',
-    action: 'Added NIDA number to citizen Jane Doe',
-    method: 'delete',
-    status: 'success',
-    time: '02/08/2022, 12:03',
-  },
-  {
-    name: 'Registration Insolvency and Trusteeship Agency',
-    abbrev: 'RITA',
-    action: 'Issued Birth Certificate to citizen John Doe',
-    method: 'post',
-    status: 'failed',
-    time: '02/08/2022, 16:40',
-  },
-  {
-    name: 'National Health Insurance Fund',
-    abbrev: 'NHIF',
-    action: 'Fetched data on citizen Jane Doe',
-    method: 'get',
-    status: 'success',
-    time: '02/08/2022, 15:30',
-  },
-  {
-    name: 'University of Dodoma',
-    abbrev: 'UDOM',
-    action: 'Fetched data on citizen Jane Doe',
-    method: 'post',
-    status: 'success',
-    time: '02/08/2022, 08:11',
-  }
-]
+
 </script>

@@ -4,7 +4,7 @@ import router from '@/router'
 import { notifyError, notifySuccess } from './notificationService'
 
 //CONTRACT AND WALLET RELATED
-const contractAddress = '0x2Ce2C24c1A46f5eB68eD4EfCE674c4F9f788d4B4'
+const contractAddress = '0x617bc20Ae80E555c8eC40e4beb5CaDae9171160e'
 const INFURA_API_KEY = '39274895cec54a43bc080c087a46ce9e'
 
 export const getProvider = () => {
@@ -58,7 +58,6 @@ export const login = async () => {
 
   const signerAddress = await signer.getAddress()
   const userType = await contract.Login(signerAddress)
-  console.log('user Type : ', userType)
 
   if (signerAddress == '0x7cE5Dc33aF6aC085df443252d8a17AC1AC4E9a97') {
     router.push('/dashboard')
@@ -75,6 +74,7 @@ export const login = async () => {
 
   if (userType.toLowerCase().includes('nhif')) {
     router.push('/bima-interface')
+    setState('role', 'nhif')
     return
   }
 

@@ -96,7 +96,6 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   if (to.meta.requiresMetaMask && !getState('signer')) {
-    console.log('passes here')
     next('/')
     notifyError('You are not Connected')
     return
@@ -104,7 +103,6 @@ router.beforeEach((to, from, next) => {
     ['Admin Dashboard', 'Institutions', 'API Requests', 'Admin Account'].includes(to.name) &&
     !(getState('role') == 'admin')
   ) {
-    console.log('here 1')
 
     next('/')
     notifyError('You are not Authorized')
@@ -115,7 +113,6 @@ router.beforeEach((to, from, next) => {
     !(getState('role') == 'nida') &&
     !(getState('role') == 'rita')
   ) {
-    console.log('herer 2')
 
     next('/')
     notifyError('You are not Authorized')

@@ -12,28 +12,7 @@
     </div>
 
     <div class="flex flex-col w-full md:w-[80%] rounded gap-2">
-      <div class="flex flex-row gap-8 bg-gray-200 w-fit px-2 py-2 rounded">
-        <div @click="switchInst('all')" :class="instFilter.all ? 'bg-white px-1 rounded shadow' : ''"
-          class="cursor-pointer transition-all duration-200 ease-in">
-          All institutions
-        </div>
-        <div @click="switchInst('gov')" :class="instFilter.gov ? 'bg-white px-1 rounded shadow' : ''"
-          class="cursor-pointer transition-all duration-200 ease-in">
-          Government
-        </div>
-        <div @click="switchInst('health')" :class="instFilter.health ? 'bg-white px-1 rounded shadow' : ''"
-          class="cursor-pointer transition-all duration-200 ease-in">
-          Healthcare
-        </div>
-        <div @click="switchInst('academic')" :class="instFilter.academic ? 'bg-white px-1 rounded shadow' : ''"
-          class="cursor-pointer transition-all duration-200 ease-in">
-          Academic
-        </div>
-        <div @click="switchInst('private')" :class="instFilter.private ? 'bg-white px-1 rounded shadow' : ''"
-          class="cursor-pointer transition-all duration-200 ease-in">
-          Mobile Networks
-        </div>
-      </div>
+
       <v-text-field label="Search institutions" prepend-inner-icon="mdi-magnify" variant="outlined"></v-text-field>
     </div>
 
@@ -84,57 +63,25 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import AddInstitutionForm from './AddInstitutionForm.vue'
-import { confirmAlert, confirmationAlert } from '@/utils/notificationService'
-import { getViewerContract, getSignerContract } from '@/utils/contractService'
 import Loader from '@/components/Loader.vue'
+import {useGatewayStore} from "@/stores/gateway.js"
 
 const isLoading = ref(false)
-
+const store = useGatewayStore()
 const overlay = ref(false)
-
-const instFilter = ref({
-  all: true,
-  gov: false,
-  health: false,
-  private: false,
-  academic: false,
-})
-
-const switchInst = (inst) => {
-  ; (instFilter.value.all = false),
-    (instFilter.value.gov = false),
-    (instFilter.value.health = false),
-    (instFilter.value.private = false),
-    (instFilter.value.academic = false)
-
-  if (inst == 'all') instFilter.value.all = true
-  if (inst == 'gov') instFilter.value.gov = true
-  if (inst == 'health') instFilter.value.health = true
-  if (inst == 'private') instFilter.value.private = true
-  if (inst == 'academic') instFilter.value.academic = true
-}
+const institutions = computed(()=>store.state.institutions)
 
 
 const reload = () => {
-  overlay = false
-  setTimeout(() => getInstitutions, 3000)
+  overlay.value = false
+  setTimeout(() => store.getInstitutions(), 3000)
 }
-
-const institutions = ref([])
-
-const getInstitutions = async () => {
-  const { contract } = await getViewerContract()
-  institutions.value = await contract.getAllInstitution()
-  console.log(institutions.value);
-
-}
-
 
 onMounted(async () => {
   isLoading.value = true
-  await getInstitutions()
+  await store.getInstitutions()
   isLoading.value = false
 })
 </script>

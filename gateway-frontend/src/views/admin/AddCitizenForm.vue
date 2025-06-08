@@ -82,9 +82,7 @@ onMounted(() => {
 
 const registerCitizen = async () => {
   const { contract } = await getSignerContract()
-  const randomInteger = Math.floor(Math.random() * 100000000)
-  console.log(randomInteger.toString());
-  
+  const randomInteger = Math.floor(Math.random() * 100000000)  
   await contract.addCitizen(formData.value.fname, formData.value.mname, formData.value.lname, formData.value.address, formData.value.gender, formData.value.dob.toString(), randomInteger.toString());
   emit('close')
 

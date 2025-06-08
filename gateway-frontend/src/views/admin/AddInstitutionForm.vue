@@ -24,7 +24,7 @@
       </v-text-field>
 
 
-      <v-select v-model="instData.instType" label="Type" :items="['Government', 'Health', 'Private', 'Academic']"
+      <v-select v-model="instData.instType" label="Type" :items="['Government', 'Private']"
         variant="outlined"></v-select>
 
       <div class="py-4 w-full">
