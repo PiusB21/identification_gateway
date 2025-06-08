@@ -43,7 +43,7 @@ contract IdentityGateway {
 
     struct DeathCertificate {
         string causeOfDeath;
-        string dOB;
+        string dateofDeath;
         address registerBY;
         string citizenID;
     }
@@ -71,29 +71,32 @@ contract IdentityGateway {
     mapping(address => Operator) public operatorMapping;
     mapping(string => address) private fingerprintToUser; // A mapping from a Fingerprint to its corresponding Address
     mapping(string => uint256) private citizenIndexMapping;
+    mapping(address => Institution) public institutionAddressMapping;
 
     constructor() {
         _contractOwner = msg.sender;
     }
 
     //ADDING INSTITUTION
-    function addInstitution(
-        string memory _instutionName,
-        address _orgAddress,
-        string memory _orgType,
-        string memory _abbreviation
-    ) public {
-        Institution memory newOrg = Institution({
-            instutionName: _instutionName,
-            abbreviation: _abbreviation,
-            orgType: _orgType,
-            orgAddress: _orgAddress
-        });
+   function addInstitution(
+    string memory _instutionName,
+    address _orgAddress,
+    string memory _orgType,
+    string memory _abbreviation
+) public {
+    Institution memory newOrg = Institution({
+        instutionName: _instutionName,
+        abbreviation: _abbreviation,
+        orgType: _orgType,
+        orgAddress: _orgAddress
+    });
 
-        institutionArray.push(newOrg);
-        institutionMapping[_abbreviation] = newOrg;
-        addTransaction("Added Institution", msg.sender);
-    }
+    institutionArray.push(newOrg);
+    institutionMapping[_abbreviation] = newOrg;
+    institutionAddressMapping[_orgAddress] = newOrg;
+
+    addTransaction("Added Institution", msg.sender);
+}
 
     function issueCitizenId(string memory _birthCertificateNo, string memory _citizenId) public {
     // Update in mapping
@@ -161,13 +164,13 @@ contract IdentityGateway {
 
     function issueDeathCertificate(
         string memory _causeOfDeath,
-        string memory _dOB,
+        string memory _dateofDeath,
         address _registerBY,
         string memory _citizenID
     ) public {
         DeathCertificate memory newDeath = DeathCertificate({
             causeOfDeath: _causeOfDeath,
-            dOB: _dOB,
+            dateofDeath: _dateofDeath,
             registerBY: _registerBY,
             citizenID: _citizenID
         });
@@ -256,6 +259,13 @@ contract IdentityGateway {
     function getAllInstitution() public view returns (Institution[] memory) {
         return institutionArray;
     }
+
+    //get institution name
+    function getInstitutionNameByAddress(address _orgAddress) public view returns (string memory) {
+    require(bytes(institutionAddressMapping[_orgAddress].instutionName).length > 0, "Institution not found");
+    return institutionAddressMapping[_orgAddress].instutionName;
+}
+
 
     //get particular citizen data
     function getCitizenData(string memory _birthCertificateNo)
