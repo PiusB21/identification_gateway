@@ -20,9 +20,9 @@ export const useGatewayStore = defineStore('gateway', () => {
     state.citizens = await contract.getAllCitizens()
   }
 
-  const addCitizen = async (fname,mname,lname,address,gender,dob,randomInteger)=>{
+  const addCitizen = async (fname,mname,randomInteger,lname,gender,dob)=>{
     const { contract } = await getSignerContract()
-    await contract.addCitizen(fname, mname, lname, address, gender, dob, randomInteger);
+    await contract.addCitizen(fname, mname, randomInteger, lname, gender, dob);
     setTimeout(()=>getCitizens(),3000)
   }
 
@@ -43,5 +43,28 @@ export const useGatewayStore = defineStore('gateway', () => {
     state.logs = await contract.getAllTransactions()
   }
 
-  return { state,getInstitutions,getCitizens,getLogs,addCitizen,addInstitution,toggleLoading }
+  const getIndividualCitizenData = async (birthCertificateNo)=>{
+      const { contract } = await getViewerContract()
+      const citizen = await contract.getCitizenData(birthCertificateNo)
+      return citizen
+  }
+
+  const issueDeathCertificate = async(
+    cause, dob, registeredBy, citizenId
+  )=>{
+    const { contract } = await getSignerContract()
+    contract.issueDeathCertificate(cause, dob, registeredBy, citizenId)
+  }
+
+  return { 
+    state,
+    getInstitutions,
+    getCitizens,
+    getLogs,
+    addCitizen,
+    addInstitution,
+    toggleLoading,
+    getIndividualCitizenData,
+    issueDeathCertificate 
+  }
 })

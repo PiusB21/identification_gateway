@@ -39,7 +39,9 @@
 import { onMounted, ref, defineEmits } from 'vue'
 import { getSignerContract } from '@/utils/contractService'
 import Loader from '@/components/Loader.vue'
+import {useGatewayStore} from "@/stores/gateway.js"
 
+const store = useGatewayStore()
 const emit = defineEmits(['close'])
 
 const isLoading = ref(false)
@@ -64,13 +66,10 @@ const convertToDateObject = (dateString) => {
 
 const registerInstitution = async () => {
   isLoading.value = true
-  const { contract } = await getSignerContract()
-  await contract.addInstitution(instData.value.name, instData.value.address, instData.value.instType, instData.value.abbrev);
-  await contract.addOperator('operator', 'operator', instData.value.address, 'operator', instData.value.abbrev)
+  await store.addInstitution(instData.value.name, instData.value.address, instData.value.instType, instData.value.abbrev);
   isLoading.value = false
   emit('close')
 }
-
 
 //0xe974DB6b5832bfc0228b5b15167cC588454AD048
 

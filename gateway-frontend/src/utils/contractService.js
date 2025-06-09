@@ -58,12 +58,14 @@ export const login = async () => {
 
   const signerAddress = await signer.getAddress()
   const userType = await contract.Login(signerAddress)
-
+  console.log(userType);
+  
   if (signerAddress == '0x7cE5Dc33aF6aC085df443252d8a17AC1AC4E9a97') {
-    router.push('/dashboard')
     setState('name', 'admin')
     setState('signer', signerAddress)
     setState('role', 'admin')
+    router.push('/dashboard')
+
     return
   }
 
@@ -73,18 +75,20 @@ export const login = async () => {
   }
 
   if (userType.toLowerCase().includes('nhif')) {
-    router.push('/bima-interface')
     setState('role', 'nhif')
+    router.push('/bima-interface')
     return
   }
 
   if (userType.toLowerCase().includes('rita')) {
+    setState('role', 'rita')
     router.push('/rita-interface')
     return
   }
 
   if (userType.toLowerCase().includes('nida')) {
-    router.push('/rita-interface')
+    setState('role', 'nida')
+    router.push('/nida-interface')
     return
   }
 }

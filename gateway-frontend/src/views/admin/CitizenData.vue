@@ -1,8 +1,10 @@
 <template>
-  <v-overlay v-model="overlay" class="flex items-center justify-center">
-    <AddCitizenForm @close="overlay = false" :editedCitizen="editedCitizen" :themeColor="props.themeColor" />
+  <v-overlay v-model="add_overlay" class="flex items-center justify-center">
+    <AddCitizenForm @close="add_overlay = false" :editedCitizen="editedCitizen" :themeColor="props.themeColor" />
   </v-overlay>
-
+  <v-overlay v-model="issue_overlay" class="flex items-center justify-center">
+    <IssueDeathCertificate @close="issue_overlay = false" :editedCitizen="editedCitizen" :themeColor="props.themeColor" />
+  </v-overlay>
   <section :class="route.path == '/citizen-data' ? 'bg-[var(--sec)]' : ''"
     class="h-full flex flex-col items-center gap-4 pb-20">
     <div class="flex justify-between w-full md:w-[90%] py-8 rounded">
@@ -10,8 +12,8 @@
         <div class="text-2xl">Citizen Data</div>
         <div class="text-gray-500 text-[13px]">Search and manage citizen information</div>
       </div>
-      <v-btn  @click="overlay = true" flat :color="props.themeColor || 'primary'" prepend-icon="mdi-account-plus">
-        ADD CITIZEN {{ getState('role') }}
+      <v-btn v-if="getState('role')=='rita'"  @click="add_overlay = true" flat :color="props.themeColor || 'primary'" prepend-icon="mdi-account-plus">
+        ADD CITIZEN
       </v-btn>
     </div>
 
@@ -37,7 +39,7 @@
       <tbody>
         <tr class="text-[15px] lg:text-lg" v-for="item in citizens" :key="item.citizenId">
           <td class="font-semibold text-gray-700">
-            {{ item.citizenId || '-' }}
+            TZ-{{ item.birthCertificateNo || '-' }}
           </td>
           <td>{{ item.firstName }}&nbsp;{{ item.lastName }}</td>
           <td>
@@ -62,8 +64,8 @@
             <v-btn @click="editCitizen(item)" :color="props.themeColor || 'primary'" variant="text" icon="mdi-pen"
               title="Edit"></v-btn>
 
-            <v-btn v-if="item.alive && route.path == '/rita-interface'" @click="certifyDeath(item)"
-              :color="props.themeColor || 'red'" variant="text" icon="mdi-certificate-outline"
+            <v-btn v-if="item.citizenStatus && route.path == '/rita-interface'" @click="issue_overlay=true"
+              :color="'red'" variant="text" icon="mdi-certificate-outline"
               title="Issue Death Certificate"></v-btn>
           </td>
         </tr>
@@ -80,10 +82,13 @@ import { confirmAlert } from '@/utils/notificationService'
 import { getViewerContract,getState } from '@/utils/contractService'
 import Loader from '@/components/Loader.vue'
 import {useGatewayStore} from "@/stores/gateway.js"
+import IssueDeathCertificate from "../rita/IssueDeathCertificate.vue"
 
 const store = useGatewayStore()
 const isLoading = ref(false)
-const overlay = ref(false)
+const add_overlay = ref(false)
+const issue_overlay = ref(false)
+
 const citizens = computed(()=>store.state.citizens)
 
 const route = useRoute()
@@ -94,17 +99,18 @@ const editedCitizen = ref(null)
 
 const editCitizen = (citizen) => {
   editedCitizen.value = citizen
-  overlay.value = true
+  add_overlay.value = true
 }
 
 
 const certifyDeath = async (person) => {
   const response = await confirmAlert(
     `You are issuing a death certificate to
-        ${person.fname} ${person.lname}
-        ${person.national_id}`,
+        ${person.firstName} ${person.lastName}
+        Certificate No. T-${person.birthCertificateNo}`,
   )
   if (response.isConfirmed) {
+    
     const indexOfDeceased = citizenData.value.findIndex(
       (item) => item.national_id == person.national_id,
     )
@@ -124,61 +130,4 @@ const formatDate = (dateString) => {
   return formatted
 }
 
-const citizenData = ref([
-  {
-    fname: 'Pius',
-    lname: 'Baraka',
-    national_id: 'TZ-1232-12315-2322-001',
-    dob: '21/08/2001',
-    gender: 'male',
-    region: 'Arusha',
-    district: 'Arusha',
-    alive: true,
-    last_updated: '02/08/2022',
-  },
-  {
-    fname: 'Amina',
-    lname: 'Juma',
-    national_id: 'TZ-9876-54321-6789-002',
-    dob: '14/05/1995',
-    gender: 'female',
-    region: 'Dar es Salaam',
-    district: 'Kinondoni',
-    alive: true,
-    last_updated: '10/03/2023',
-  },
-  {
-    fname: 'John',
-    lname: 'Mwenda',
-    national_id: 'TZ-4567-89012-3456-003',
-    dob: '30/11/1988',
-    gender: 'male',
-    region: 'Dodoma',
-    district: 'Dodoma',
-    alive: false,
-    last_updated: '15/09/2021',
-  },
-  {
-    fname: 'Fatma',
-    lname: 'Hassan',
-    national_id: 'TZ-2345-67890-1234-004',
-    dob: '07/02/1999',
-    gender: 'female',
-    region: 'Mwanza',
-    district: 'Ilemela',
-    alive: true,
-    last_updated: '05/07/2022',
-  },
-  {
-    fname: 'David',
-    lname: 'Kimaro',
-    national_id: 'TZ-6789-01234-5678-005',
-    dob: '12/06/1984',
-    gender: 'male',
-    region: 'Mbeya',
-    district: 'Mbeya City',
-    alive: false,
-    last_updated: '20/01/2024',
-  },
-])
 </script>

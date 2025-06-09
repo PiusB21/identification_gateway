@@ -118,13 +118,6 @@ router.beforeEach((to, from, next) => {
     notifyError('You are not Authorized')
     return
   }
-
-  // else if(['Registered Users'].includes(to.name)&& !(getState('role')=='prosecutor')){
-  //     next('/');
-  //     notifyError("You are not Authenticated")
-  //     return;
-  // }
-
   next()
 })
 

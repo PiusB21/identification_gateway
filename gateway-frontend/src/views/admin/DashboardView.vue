@@ -134,7 +134,7 @@ onMounted(async()=>{
           <div class="text-gray-900 text-lg">Recent Activity</div>
           <Loader v-if="isLoading" class=" w-[50%] flex items-center justify-center my-4" :color="'stroke-blue-600'" />
 
-          <div v-for="(log,index) in logs.slice(0, 3)" :key="index" class="grid grid-cols-6 min-w-fit my-4 border-b border-gray-400 py-2">
+          <div v-for="(log,index) in [...logs].reverse().slice(0, 3)" :key="index" class="grid grid-cols-6 min-w-fit my-4 border-b border-gray-400 py-2">
             <div class="col-span-1">
               <div
                 class="bg-[var(--sec)] w-9 h-9 rounded-full p-2 flex justify-center items-center"

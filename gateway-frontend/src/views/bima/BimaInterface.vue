@@ -24,40 +24,64 @@
           label="Citizen ID"
         >
           <template v-slot:append>
-            <v-btn size="x-large" color="rgb(125, 73, 12)">
+            <v-btn :loading="isLoading" @click="getCitizenData()" size="x-large" color="rgb(125, 73, 12)">
               <div class="lowercase text-md">Fetch</div>
             </v-btn>
           </template>
         </v-text-field>
       </div>
 
-      <section class="flex flex-col gap-4 py-4">
+      <section v-if="citizenData?.birthCertificateNo" class="flex flex-col gap-4 py-4">
         <div class="grid grid-cols-8">
           <div class="col-span-1 text-gray-600">Id</div>
-          <div class="col-span-7 text-lg">TZ-1232-12315-2322-001</div>
+          <div class="col-span-7 text-lg">TZ-{{citizenData.birthCertificateNo}}</div>
         </div>
         <div class="grid grid-cols-8">
           <div class="col-span-1 text-gray-600">Name</div>
-          <div class="col-span-7 text-lg">John Doe</div>
+          <div class="col-span-7 text-lg">{{citizenData.firstName}}&nbsp;{{citizenData.middleName}}&nbsp;{{citizenData.lastName}}</div>
         </div>
         <div class="grid grid-cols-8">
           <div class="col-span-1 text-gray-600">Date of Birth</div>
-          <div class="col-span-7 text-lg">21/08/2001</div>
+          <div class="col-span-7 text-lg">{{ new Date(citizenData.dateofBirth).toDateString() }}</div>
         </div>
         <div class="grid grid-cols-8">
           <div class="col-span-1 text-gray-600">Life Status</div>
-          <div class="col-span-7 text-lg">ALIVE</div>
+          <div class="col-span-7 text-lg">
+            <div 
+            :class="citizenData.citizenStatus?'!border-green-700 text-green-700':'!border-red-700 text-red-700'"
+            class="w-fit px-4 py-1 border-2 rounded-md font-semibold font-sans">{{citizenData.citizenStatus?'ALIVE':'DECEASED'}}</div>
+          </div>
         </div>
       </section>
+
+      <div class="text-red-700" v-if="citizenData && !citizenData?.birthCertificateNo && !citizenData?.citizenStatus && !isLoading">
+        CITIZEN DOES NOT EXIST
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
+
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import {logout} from "@/utils/contractService.js"
+import {useGatewayStore} from "@/stores/gateway.js"
+
+const store = useGatewayStore()
 
 const router = useRouter()
 const searchedId = ref('')
+const isLoading = ref(false)
+const citizenData = ref(null)
+
+const getCitizenData = async()=>{
+
+  if(searchedId.value.length>0){
+    isLoading.value=true
+    citizenData.value = await store.getIndividualCitizenData(searchedId.value)
+    isLoading.value=false
+  }
+}
+//7451456
 </script>
