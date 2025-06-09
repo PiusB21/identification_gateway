@@ -52,11 +52,15 @@ const options = {
   responsive: true,
 }
 const isLoading = computed(()=>store.state.isLoading)
-
 const institutions = computed(()=>store.state.institutions)
 const citizens = computed(()=>store.state.citizens)
 const logs = computed(()=>store.state.logs)
 
+
+const getInstitutionName = (address)=>{
+  if(address=='0x7cE5Dc33aF6aC085df443252d8a17AC1AC4E9a97') return 'admin'
+  return institutions.value.find(inst=>inst.orgAddress==address).abbreviation
+}
 
 onMounted(async()=>{  
   
@@ -144,7 +148,7 @@ onMounted(async()=>{
             </div>
             <div class="col-span-3">
               <div>{{log.action}}</div>
-              <div class="col-span-2 text-gray-500 text-[13px]">By&nbsp;{{ log.performedBy }}</div>
+              <div class="col-span-2 text-gray-500 text-[13px]">By&nbsp;{{ getInstitutionName(log.performedBy)  }}</div>
             </div>
             <div class="col-span-2 text-gray-500 text-[13px]">{{getDate(log.timestamp)}}</div>
           </div>

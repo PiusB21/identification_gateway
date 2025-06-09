@@ -33,8 +33,12 @@
 
       <section v-if="citizenData?.birthCertificateNo" class="flex flex-col gap-4 py-4">
         <div class="grid grid-cols-8">
-          <div class="col-span-1 text-gray-600">Id</div>
-          <div class="col-span-7 text-lg">TZ-{{citizenData.birthCertificateNo}}</div>
+          <div class="col-span-1 text-gray-600">Citizen Id</div>
+          <div class="col-span-7 text-lg">{{citizenData.citizenId}}</div>
+        </div>
+        <div class="grid grid-cols-8">
+          <div class="col-span-1 text-gray-600">Birth Certificate No.</div>
+          <div class="col-span-7 text-lg">{{citizenData.birthCertificateNo}}</div>
         </div>
         <div class="grid grid-cols-8">
           <div class="col-span-1 text-gray-600">Name</div>

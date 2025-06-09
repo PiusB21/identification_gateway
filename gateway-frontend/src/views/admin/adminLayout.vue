@@ -9,7 +9,7 @@ const drawer = ref(false)
 <template>
   <v-card>
     <v-layout>
-      <v-navigation-drawer width="300" class="bg-[var(--pri)]" color="primary" expand-on-hover rail>
+      <v-navigation-drawer :permanent="true" width="300" class="bg-[var(--pri)]" color="primary" expand-on-hover rail>
         <v-list>
           <v-list-item prepend-icon="mdi-lan-connect" title="Gateway Portal">
             <template v-slot:title>
@@ -54,7 +54,7 @@ const drawer = ref(false)
         </v-list>
       </v-navigation-drawer>
 
-      <v-main style="height: 100vh" class="flex flex-col">
+      <v-main style="height: 100vh" class="!flex !flex-col overflow-y-auto">
         <v-app-bar color="white" class="elevation-0 px-4">
           <v-toolbar-title>
             <div class="text-xl font-bold text-gray-800">Gateway Portal</div>
@@ -64,7 +64,7 @@ const drawer = ref(false)
 
           <v-btn @click="logout()" color="primary" icon="mdi-logout" title="Logout" variant="outlined"></v-btn>
         </v-app-bar>
-        <div class="h-full w-full overflow-y-auto">
+        <div class="flex-1 w-full !p-4">
           <router-view></router-view>
         </div>
       </v-main>
