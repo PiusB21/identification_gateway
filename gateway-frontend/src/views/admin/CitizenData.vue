@@ -21,7 +21,7 @@
     </div>
 
     <div class="flex flex-col w-full md:w-[90%] rounded gap-2">
-      <v-text-field label="Search by name, ID number, or other details..." prepend-inner-icon="mdi-magnify"
+      <v-text-field v-model="search" label="Search by name, ID number, or other details..." prepend-inner-icon="mdi-magnify"
         variant="outlined"></v-text-field>
     </div>
 
@@ -39,7 +39,7 @@
       </thead>
       <Loader class=" w-full absolute flex items-center justify-center" v-if="isLoading" :color="'stroke-blue-600'" />
       <tbody>
-        <tr class="text-[15px] lg:text-lg" v-for="item in citizens" :key="item.citizenId">
+        <tr class="text-[15px] lg:text-lg" v-for="item in filteredCitizens" :key="item.citizenId">
           <td class="font-semibold text-gray-700">
     {{ item.citizenId || '-' }}
           </td>
@@ -83,7 +83,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref,computed } from 'vue'
+import { onMounted, ref,computed,watch } from 'vue'
 import { useRoute } from 'vue-router'
 import AddCitizenForm from './AddCitizenForm.vue'
 import { confirmAlert } from '@/utils/notificationService'
@@ -98,8 +98,10 @@ const isLoading = ref(false)
 const add_overlay = ref(false)
 const issue_overlay = ref(false)
 const id_overlay = ref(false)
+const search = ref('')
 
 const citizens = computed(()=>store.state.citizens)
+const filteredCitizens = ref([])
 
 const route = useRoute()
 
@@ -122,10 +124,28 @@ const certifyDeath = (citizen)=>{
   issue_overlay.value = true
 }
 
+const matchesSearch = (objectValue)=>{
+  return objectValue.toLowerCase().includes(search.value.toLowerCase())
+}
+
+const filterCitizens = ()=>{
+  if(!search.value){
+    filteredCitizens.value = citizens.value
+    return
+  }
+
+  filteredCitizens.value = citizens.value.filter(
+    citizen => matchesSearch(citizen.citizenId) || 
+    matchesSearch(citizen.firstName) || matchesSearch(citizen.lastName)|| matchesSearch(citizen.birthCertificateNo)
+  )
+}
+
+watch(search,()=>filterCitizens())
 
 onMounted(async () => {
   isLoading.value = true
   await store.getCitizens()
+  filterCitizens()
   isLoading.value = false
 })
 

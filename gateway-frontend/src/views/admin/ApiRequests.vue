@@ -48,9 +48,9 @@
       </thead>
       <Loader class=" w-full absolute flex items-center justify-center" v-if="isLoading" :color="'stroke-blue-600'" />
       <tbody>
-        <tr class="text-[15px] lg:text-lg" v-for="(item, index) in logs" :key="index">
+        <tr class="text-[15px] lg:text-lg" v-for="(item, index) in restructuredLogs" :key="index">
           <td>
-            <div class="flex flex-row gap-2 items-center font-sans">
+            <div class="flex flex-col gap-[0.5] text-[13px] justify-center font-sans">
               <div class="">{{ item.name }}</div>
               <div class="text-gray-500 text-[13px]">{{ item.performedBy }}</div>
             </div>
@@ -60,16 +60,6 @@
               {{ item.action }}
             </div>
           </td>
-          <!-- <td>
-            <div :class="[
-              item.method == 'get' ? 'bg-blue-50 text-blue-700 border-blue-700' : '',
-              item.method == 'post' ? 'bg-green-50 text-green-700 border-green-700' : '',
-              item.method == 'put' ? 'bg-yellow-50 text-yellow-700 border-yellow-700' : '',
-              item.method == 'delete' ? 'bg-red-50 text-red-700 border-red-700' : '',
-            ]" class="border rounded-full text-center w-[80px] px-2 font-medium uppercase text-[15px]">
-              {{ item.method }}
-            </div>
-          </td> -->
           <td>
             <div :class="[
               item.status ? 'text-green-700' : 'text-red-700',
@@ -98,11 +88,27 @@ import {useGatewayStore} from "@/stores/gateway.js"
 const store = useGatewayStore()
 const isLoading = ref(false)
 const logs = computed(()=>store.state.logs)
+const restructuredLogs = ref([])
+const institutions = computed(()=>store.state.institutions)
 
+const getInstitutionName = (address)=>{
+  if(address=='0x7cE5Dc33aF6aC085df443252d8a17AC1AC4E9a97') return 'admin'
+  return institutions.value.find(inst=>inst.orgAddress==address)?.abbreviation
+}
 
-onMounted(async () => {
+onMounted(async() => {
+
   isLoading.value = true
   await store.getLogs()
+
+  if(institutions.value.length==0){
+    await store.getInstitutions()
+  }
+
+  restructuredLogs.value = logs.value.map(log=>{
+      return {...log,name:getInstitutionName(log.performedBy)}
+  })
+
   isLoading.value = false
 })
 

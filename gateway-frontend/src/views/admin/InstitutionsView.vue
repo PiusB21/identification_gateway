@@ -13,7 +13,7 @@
 
     <div class="flex flex-col w-full md:w-[80%] rounded gap-2">
 
-      <v-text-field label="Search institutions" prepend-inner-icon="mdi-magnify" variant="outlined"></v-text-field>
+      <v-text-field v-model="search" label="Search institutions" prepend-inner-icon="mdi-magnify" variant="outlined"></v-text-field>
     </div>
 
     <v-table height="80%" fixed-header class="md:w-[80%] rounded border min-h-[50vh] relative">
@@ -29,7 +29,7 @@
       </thead>
       <Loader class=" w-full absolute flex items-center justify-center" v-if="isLoading" :color="'stroke-blue-600'" />
       <tbody>
-        <tr v-for="item in institutions" :key="item.instutionName">
+        <tr v-for="item in filteredInstitutions" :key="item.instutionName">
           <td>
             <div class="flex flex-row gap-2 items-center font-sans">
               <div
@@ -63,7 +63,7 @@
 </template>
 
 <script setup>
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import AddInstitutionForm from './AddInstitutionForm.vue'
 import Loader from '@/components/Loader.vue'
 import {useGatewayStore} from "@/stores/gateway.js"
@@ -72,16 +72,37 @@ const isLoading = ref(false)
 const store = useGatewayStore()
 const overlay = ref(false)
 const institutions = computed(()=>store.state.institutions)
+const filteredInstitutions = ref([])
 
+const search = ref('')
 
 const reload = () => {
   overlay.value = false
   setTimeout(() => store.getInstitutions(), 3000)
 }
 
+const matchesSearch = (objectValue)=>{
+  return objectValue.toLowerCase().includes(search.value.toLowerCase())
+}
+
+const filterInstitutions = ()=>{
+  if(!search.value){
+    filteredInstitutions.value = institutions.value
+    return
+  }
+
+  filteredInstitutions.value = institutions.value.filter(
+    inst => matchesSearch(inst.instutionName) || matchesSearch(inst.abbreviation) || matchesSearch(inst.orgAddress) || matchesSearch(inst.orgType)
+  )
+}
+
+watch(search,()=>filterInstitutions())
+
 onMounted(async () => {
   isLoading.value = true
   await store.getInstitutions()
   isLoading.value = false
+
+  filterInstitutions()
 })
 </script>

@@ -64,7 +64,7 @@ const drawer = ref(false)
 
           <v-btn @click="logout()" color="primary" icon="mdi-logout" title="Logout" variant="outlined"></v-btn>
         </v-app-bar>
-        <div class="flex-1 w-full !p-4">
+        <div class="flex-1 w-full">
           <router-view></router-view>
         </div>
       </v-main>
