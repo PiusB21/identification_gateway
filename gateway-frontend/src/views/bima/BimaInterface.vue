@@ -4,7 +4,7 @@
       <div class="w-[90%] mx-auto text-3xl flex justify-between">
         <div>NHIF</div>
         <v-btn
-          @click="logout()"
+          @click="logout();router.push('/');"
           color="white"
           icon="mdi-logout"
           title="Logout"
@@ -63,7 +63,7 @@
 
 <script setup>
 
-import { ref } from 'vue'
+import { ref,computed } from 'vue'
 import { useRouter } from 'vue-router'
 import {logout} from "@/utils/contractService.js"
 import {useGatewayStore} from "@/stores/gateway.js"
@@ -74,14 +74,17 @@ const router = useRouter()
 const searchedId = ref('')
 const isLoading = ref(false)
 const citizenData = ref(null)
+const citizens = computed(()=>store.state.citizens)
 
 const getCitizenData = async()=>{
+  isLoading.value = true
+  await store.getCitizens()
+  citizenData.value = citizens.value.find(citizen=>{
+   return  citizen[5]==searchedId.value
+  })
 
-  if(searchedId.value.length>0){
-    isLoading.value=true
-    citizenData.value = await store.getIndividualCitizenData(searchedId.value)
-    isLoading.value=false
-  }
+  isLoading.value = false
+
 }
-//7451456
+
 </script>
