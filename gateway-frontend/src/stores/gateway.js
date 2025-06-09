@@ -47,13 +47,18 @@ export const useGatewayStore = defineStore('gateway', () => {
       const { contract } = await getViewerContract()
       const citizen = await contract.getCitizenData(birthCertificateNo)
       return citizen
+  } //issueCitizenId
+
+  const issueCitizenId = async (birthCertificateNo,citizenId)=>{
+      const { contract } = await getSignerContract()
+       await contract.issueCitizenId(birthCertificateNo,citizenId)
   }
 
   const issueDeathCertificate = async(
     cause, dob, registeredBy, citizenId
   )=>{
     const { contract } = await getSignerContract()
-    contract.issueDeathCertificate(cause, dob, registeredBy, citizenId)
+    await contract.issueDeathCertificate(cause, dob, registeredBy, citizenId)
   }
 
   return { 
@@ -65,6 +70,7 @@ export const useGatewayStore = defineStore('gateway', () => {
     addInstitution,
     toggleLoading,
     getIndividualCitizenData,
-    issueDeathCertificate 
+    issueDeathCertificate ,
+    issueCitizenId
   }
 })

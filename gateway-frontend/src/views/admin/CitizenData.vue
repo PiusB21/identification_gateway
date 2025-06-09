@@ -2,6 +2,9 @@
   <v-overlay v-model="add_overlay" class="flex items-center justify-center">
     <AddCitizenForm @close="add_overlay = false" :editedCitizen="editedCitizen" :themeColor="props.themeColor" />
   </v-overlay>
+  <v-overlay v-model="id_overlay" class="flex items-center justify-center">
+    <IssueCitizenId @close="id_overlay = false" :editedCitizen="editedCitizen" :themeColor="props.themeColor" />
+  </v-overlay>  
   <v-overlay v-model="issue_overlay" class="flex items-center justify-center">
     <IssueDeathCertificate @close="issue_overlay = false" :editedCitizen="editedCitizen" :themeColor="props.themeColor" />
   </v-overlay>
@@ -12,7 +15,7 @@
         <div class="text-2xl">Citizen Data</div>
         <div class="text-gray-500 text-[13px]">Search and manage citizen information</div>
       </div>
-      <v-btn v-if="getState('role')=='rita'"  @click="add_overlay = true" flat :color="props.themeColor || 'primary'" prepend-icon="mdi-account-plus">
+      <v-btn v-if="getState('role')=='rita'"  @click="editedCitizen=null;add_overlay = true" flat :color="props.themeColor || 'primary'" prepend-icon="mdi-account-plus">
         ADD CITIZEN
       </v-btn>
     </div>
@@ -26,19 +29,21 @@
       <thead>
         <tr class="text-lg font-bold" :class="props.themeColor ? `text-[${props.themeColor}]` : 'text-primary'">
           <th class="text-left">National ID</th>
+          <th v-if="getState('role')=='rita'" class="text-left">Birth Cert Id</th>
           <th class="text-left">Name</th>
           <th class="text-left">Date of Birth</th>
           <th class="text-left">Gender</th>
-          <!-- <th class="text-left">Location</th> -->
           <th class="text-left">Life Status</th>
-          <!-- <th class="text-left">Last Updated</th> -->
-          <th class="text-left">Actions</th>
+          <th v-if="getState('role')=='rita' || getState('role')=='nida'" class="text-left">Actions</th>
         </tr>
       </thead>
       <Loader class=" w-full absolute flex items-center justify-center" v-if="isLoading" :color="'stroke-blue-600'" />
       <tbody>
         <tr class="text-[15px] lg:text-lg" v-for="item in citizens" :key="item.citizenId">
           <td class="font-semibold text-gray-700">
+    {{ item.citizenId || '-' }}
+          </td>
+          <td  v-if="getState('role')=='rita'" class="font-semibold text-gray-700">
             TZ-{{ item.birthCertificateNo || '-' }}
           </td>
           <td>{{ item.firstName }}&nbsp;{{ item.lastName }}</td>
@@ -60,11 +65,14 @@
             </div>
           </td>
           <!-- <td>{{ item.last_updated }}</td> -->
-          <td class="flex">
-            <v-btn @click="editCitizen(item)" :color="props.themeColor || 'primary'" variant="text" icon="mdi-pen"
+          <td v-if="getState('role')=='rita' || getState('role')=='nida'" class="flex">
+            <v-btn v-if="getState('role')=='rita'" @click="editCitizen(item)" :color="props.themeColor || 'primary'" variant="text" icon="mdi-pen"
               title="Edit"></v-btn>
 
-            <v-btn v-if="item.citizenStatus && route.path == '/rita-interface'" @click="issue_overlay=true"
+            <v-btn v-else @click="issueCitizenId(item)" :color="props.themeColor || 'primary'" variant="text" icon="mdi-certificate-outline"
+              title="Issue Citizen Id"></v-btn>
+
+            <v-btn v-if="item.citizenStatus && route.path == '/rita-interface'" @click="certifyDeath(item)"
               :color="'red'" variant="text" icon="mdi-certificate-outline"
               title="Issue Death Certificate"></v-btn>
           </td>
@@ -83,11 +91,13 @@ import { getViewerContract,getState } from '@/utils/contractService'
 import Loader from '@/components/Loader.vue'
 import {useGatewayStore} from "@/stores/gateway.js"
 import IssueDeathCertificate from "../rita/IssueDeathCertificate.vue"
+import IssueCitizenId from '../nida/IssueCitizenId.vue'
 
 const store = useGatewayStore()
 const isLoading = ref(false)
 const add_overlay = ref(false)
 const issue_overlay = ref(false)
+const id_overlay = ref(false)
 
 const citizens = computed(()=>store.state.citizens)
 
@@ -102,21 +112,17 @@ const editCitizen = (citizen) => {
   add_overlay.value = true
 }
 
-
-const certifyDeath = async (person) => {
-  const response = await confirmAlert(
-    `You are issuing a death certificate to
-        ${person.firstName} ${person.lastName}
-        Certificate No. T-${person.birthCertificateNo}`,
-  )
-  if (response.isConfirmed) {
-    
-    const indexOfDeceased = citizenData.value.findIndex(
-      (item) => item.national_id == person.national_id,
-    )
-    citizenData.value[indexOfDeceased].alive = false
-  }
+const issueCitizenId = (citizen)=>{
+    editedCitizen.value = citizen
+    id_overlay.value = true
 }
+
+const certifyDeath = (citizen)=>{
+  editedCitizen.value = citizen
+  issue_overlay.value = true
+}
+
+
 onMounted(async () => {
   isLoading.value = true
   await store.getCitizens()

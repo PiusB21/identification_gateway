@@ -58,7 +58,6 @@ export const login = async () => {
 
   const signerAddress = await signer.getAddress()
   const userType = await contract.Login(signerAddress)
-  console.log(userType);
   
   if (signerAddress == '0x7cE5Dc33aF6aC085df443252d8a17AC1AC4E9a97') {
     setState('name', 'admin')
@@ -73,6 +72,8 @@ export const login = async () => {
     notifyError('Unauthorized User')
     return
   }
+
+  setState('signer', signerAddress)
 
   if (userType.toLowerCase().includes('nhif')) {
     setState('role', 'nhif')

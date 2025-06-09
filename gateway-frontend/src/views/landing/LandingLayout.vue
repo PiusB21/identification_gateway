@@ -1,10 +1,17 @@
 <script setup>
-import { onMounted } from 'vue'
+import { onMounted,ref } from 'vue'
 import { renderCanvas } from '@/utils/grid'
 import { useRouter } from 'vue-router'
 import { login } from "@/utils/contractService.js"
 
 const router = useRouter()
+const isLoading = ref(false)
+
+const buttonClicked = async()=>{
+  isLoading.value = true
+  await login()
+  isLoading.value = false
+}
 
 onMounted(() => {
   const canvasElements = [...document.querySelectorAll('canvas')]
@@ -23,7 +30,7 @@ onMounted(() => {
         </h1>
         <div></div>
         <div class="ml-auto">
-          <v-btn @click="login()" color="primary">LOGIN</v-btn>
+          <v-btn :loading="isLoading" @click="buttonClicked()" color="primary">LOGIN</v-btn>
         </div>
       </nav>
       <div class="flex-1 flex z-10">
