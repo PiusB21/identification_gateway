@@ -78,7 +78,7 @@ onMounted(async()=>{
 
 <template>
   <section class="bg-[var(--sec)] h-full py-8">
-    <div class="md:w-[70%] mx-auto flex flex-col gap-4 h-full">
+    <div class="md:w-[90%] mx-auto flex flex-col gap-4 h-full">
       <div class="flex flex-col">
         <div class="text-2xl">Dashboard</div>
         <div class="text-gray-500 text-[13px]">Welcome back to The Gateway-Portal</div>

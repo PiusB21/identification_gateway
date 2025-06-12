@@ -1,13 +1,13 @@
 <template>
   <section class="bg-[var(--sec)] h-full flex flex-col items-center gap-4 pb-20">
-    <div class="flex justify-between w-full md:w-[80%] py-8 rounded">
+    <div class="flex justify-between w-full md:w-[90%] py-8 rounded">
       <div class="flex flex-col">
         <div class="text-2xl">Action Logs</div>
         <div class="text-gray-500 text-[13px]">Monitor and audit all gateway activity</div>
       </div>
     </div>
 
-    <div class="flex flex-col w-full md:w-[80%] rounded gap-2">
+    <div class="flex flex-col w-full md:w-[90%] rounded gap-2">
 
       <div class="grid grid-cols-3 gap-8">
         <div class="flex flex-row gap-8 bg-gray-200 w-fit px-2 py-2 rounded h-fit">
@@ -36,7 +36,7 @@
       </div>
     </div>
 
-    <v-table height="80%" fixed-header class="md:w-[80%] rounded border min-h-[300px] relative">
+    <v-table height="80%" fixed-header class="md:w-[90%] rounded border min-h-[300px] relative">
       <thead>
         <tr class="text-lg font-bold">
           <th class="text-left">Institution</th>

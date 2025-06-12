@@ -31,7 +31,7 @@
       </div>
       <div class="flex flex-wrap gap-2 items-center max-md:justify-center">
         <div
-          v-for="inst in desserts"
+          v-for="inst,index in desserts" :key="index"
           class="border border-gray-400 rounded px-4 py-4 bg-white flex flex-col w-[24%] min-w-fit max-sm:w-[90%]"
         >
           <div class="flex justify-between">

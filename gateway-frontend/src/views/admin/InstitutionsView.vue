@@ -3,7 +3,7 @@
     <AddInstitutionForm @close="reload()" />
   </v-overlay>
   <section class="bg-[var(--sec)] h-full flex flex-col items-center gap-4 pb-20">
-    <div class="flex justify-between w-full md:w-[80%] py-8 rounded">
+    <div class="flex justify-between w-full md:w-[90%] py-8 rounded">
       <div class="flex flex-col">
         <div class="text-2xl">Institutions</div>
         <div class="text-gray-500 text-[13px]">Manage registered institutions and their access</div>
@@ -11,12 +11,12 @@
       <v-btn @click="overlay = true" flat prepend-icon="mdi-bank-plus" color="primary">ADD Institution</v-btn>
     </div>
 
-    <div class="flex flex-col w-full md:w-[80%] rounded gap-2">
+    <div class="flex flex-col w-full md:w-[90%] rounded gap-2">
 
       <v-text-field v-model="search" label="Search institutions" prepend-inner-icon="mdi-magnify" variant="outlined"></v-text-field>
     </div>
 
-    <v-table height="80%" fixed-header class="md:w-[80%] rounded border min-h-[50vh] relative">
+    <v-table height="80%" fixed-header class="md:w-[90%] rounded border min-h-[50vh] relative">
       <thead>
         <tr class="text-lg font-bold">
           <th class="text-left">Institution</th>
