@@ -68,8 +68,6 @@ const getInstitutionName = (address)=>{
 const chartRef = ref(0)
 
 onMounted(async()=>{  
-  
-  if(institutions.value.length==0 || citizens.value.length==0 || logs.value.length==0){
     store.toggleLoading(true)
 
     await store.getCitizens()
@@ -84,7 +82,6 @@ onMounted(async()=>{
     chartRef.value++
     
     store.toggleLoading(false)
-  }
 })
 </script>
 

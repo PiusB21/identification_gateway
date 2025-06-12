@@ -65,7 +65,6 @@ const convertToDateObject = (dateString) => {
 }
 
 onMounted(() => {
-  
   if (props.editedCitizen) {
     formData.value.fname = props.editedCitizen.firstName
     formData.value.lname = props.editedCitizen.lastName

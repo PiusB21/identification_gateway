@@ -24,29 +24,14 @@ const router = createRouter({
       component: LandingLayout,
     },
     {
-      path: '/bima',
-      name: 'Bima Login',
-      component: () => import('../views/bima/LoginView.vue'),
-    },
-    {
       path: '/bima-interface',
       name: 'Bima Interface',
       component: () => import('../views/bima/BimaInterface.vue'),
     },
     {
-      path: '/nida',
-      name: 'Nida Login',
-      component: () => import('../views/nida/LoginView.vue'),
-    },
-    {
       path: '/nida-interface',
       name: 'Nida Interface',
       component: () => import('../views/nida/NidaInterface.vue'),
-    },
-    {
-      path: '/rita',
-      name: 'Rita Login',
-      component: () => import('../views/rita/LoginView.vue'),
     },
     {
       path: '/rita-interface',

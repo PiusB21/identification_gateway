@@ -57,7 +57,8 @@
           </div>
         </div>
       </section>
-      <div class="text-red-700" v-if="citizenData=='nothing' && !citizenData?.birthCertificateNo && !isLoading">
+
+      <div class="text-red-700" v-if="citizenData && !citizenData?.birthCertificateNo && !citizenData?.citizenStatus && !isLoading">
         CITIZEN DOES NOT EXIST
       </div>
     </div>
@@ -81,17 +82,10 @@ const citizens = computed(()=>store.state.citizens)
 
 const getCitizenData = async()=>{
   isLoading.value = true
-
   await store.getCitizens()
-
   citizenData.value = citizens.value.find(citizen=>{
    return  citizen[5]==searchedId.value
   })
-
-  if(!citizenData.value) citizenData.value = 'nothing'
-
-  console.log('citizen Data ', citizenData.value);
-  
 
   isLoading.value = false
 
