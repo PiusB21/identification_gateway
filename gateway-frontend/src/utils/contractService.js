@@ -92,6 +92,9 @@ export const login = async () => {
     router.push('/nida-interface')
     return
   }
+
+    setState('role', userType)
+    router.push('/inst-interface')
 }
 
 export const logout = () => {

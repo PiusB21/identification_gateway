@@ -1,8 +1,8 @@
 <template>
   <div class="flex flex-col items-center">
-    <nav :style="{ backgroundColor: 'rgb(125, 73, 12)' }" class="py-4 text-white w-full">
+    <nav :style="{ backgroundColor: 'rgb(125, 125, 00)' }" class="py-4 text-white w-full">
       <div class="w-[90%] mx-auto text-3xl flex justify-between">
-        <div>NHIF</div>
+        <div>{{getState('role')}}</div>
         <v-btn
           @click="logout();router.push('/');"
           color="white"
@@ -69,7 +69,7 @@
 
 import { ref,computed } from 'vue'
 import { useRouter } from 'vue-router'
-import {logout} from "@/utils/contractService.js"
+import {getState, logout} from "@/utils/contractService.js"
 import {useGatewayStore} from "@/stores/gateway.js"
 
 const store = useGatewayStore()

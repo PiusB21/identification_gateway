@@ -3,7 +3,8 @@
     <nav :style="{ backgroundColor: 'rgb(125, 73, 12)' }" class="py-4 text-white w-full">
       <div class="w-[90%] mx-auto text-3xl flex justify-between">
         <div>NHIF</div>
-        <v-btn
+        <v-btn 
+        class=""
           @click="logout();router.push('/');"
           color="white"
           icon="mdi-logout"
@@ -24,7 +25,7 @@
           label="Citizen ID"
         >
           <template v-slot:append>
-            <v-btn :loading="isLoading" @click="getCitizenData()" size="x-large" color="rgb(125, 73, 12)">
+            <v-btn  :disabled="!searchedId" :loading="isLoading" @click="getCitizenData()" size="x-large" color="rgb(125, 73, 12)">
               <div class="lowercase text-md">Fetch</div>
             </v-btn>
           </template>
@@ -57,7 +58,7 @@
           </div>
         </div>
       </section>
-      <div class="text-red-700" v-if="citizenData=='nothing' && !citizenData?.birthCertificateNo && !isLoading">
+      <div class="text-red-700" v-if=" searchedId && citizenData=='nothing' && !citizenData?.birthCertificateNo && !isLoading">
         CITIZEN DOES NOT EXIST
       </div>
     </div>
@@ -66,7 +67,7 @@
 
 <script setup>
 
-import { ref,computed } from 'vue'
+import { ref,computed,watch } from 'vue'
 import { useRouter } from 'vue-router'
 import {logout} from "@/utils/contractService.js"
 import {useGatewayStore} from "@/stores/gateway.js"
@@ -78,6 +79,8 @@ const searchedId = ref('')
 const isLoading = ref(false)
 const citizenData = ref(null)
 const citizens = computed(()=>store.state.citizens)
+
+watch(searchedId,()=>citizenData.value=null)
 
 const getCitizenData = async()=>{
   isLoading.value = true

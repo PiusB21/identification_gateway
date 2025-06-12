@@ -39,6 +39,11 @@ const router = createRouter({
       component: () => import('../views/rita/RitaInterface.vue'),
     },
     {
+      path: '/inst-interface',
+      name: 'Institution Interface',
+      component: () => import('../views/other-institutions/OtherInstitutionsInterface.vue'),
+    },
+    {
       path: '/auth',
       name: 'Authentication',
       component: authLayout,
