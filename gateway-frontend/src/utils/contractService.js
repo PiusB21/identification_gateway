@@ -113,3 +113,31 @@ export const getDate = (timestampInBigNumber) => {
 export const getNumber = (inBigNumber) => {
   return ethers.BigNumber.from(inBigNumber).toString()
 }
+
+
+export const countTimestampsByWeekday = (timestamps) => {
+  const counts = Array(7).fill(0);
+
+  const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+  const now = new Date();
+  const todayDayIndex = now.getDay(); // 0 = Sun, 1 = Mon, ..., 6 = Sat
+
+  // Get Monday of this week
+  const startOfWeek = new Date(now);
+  const diffToMonday = todayDayIndex === 0 ? 6 : todayDayIndex - 1;
+  startOfWeek.setDate(now.getDate() - diffToMonday);
+  startOfWeek.setHours(0, 0, 0, 0); // start of Monday
+
+  timestamps.forEach(ts => {
+    const timestampInSeconds = ethers.BigNumber.from(ts).toString()
+    const timestampInMs = parseFloat(timestampInSeconds) * 1000
+    const date = new Date(timestampInMs);
+
+    if (date >= startOfWeek && date <= now) {
+      const index = date.getDay();
+      counts[index]++;
+    }
+  });
+  return counts;
+}

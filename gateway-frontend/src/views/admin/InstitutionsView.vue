@@ -12,7 +12,6 @@
     </div>
 
     <div class="flex flex-col w-full md:w-[90%] rounded gap-2">
-
       <v-text-field v-model="search" label="Search institutions" prepend-inner-icon="mdi-magnify" variant="outlined"></v-text-field>
     </div>
 
@@ -22,9 +21,7 @@
           <th class="text-left">Institution</th>
           <th class="text-left">Address</th>
           <th class="text-left">Type</th>
-          <!-- <th class="text-left">Joined</th>
-          <th class="text-left">Operators</th> -->
-          <th class="text-left">Actions</th>
+
         </tr>
       </thead>
       <Loader class=" w-full absolute flex items-center justify-center" v-if="isLoading" :color="'stroke-blue-600'" />
@@ -47,14 +44,6 @@
             <div class="h-fit w-34 border px-3 py-1 text-center rounded-full text-[12px] font-semibold">
               {{ item.orgType }}
             </div>
-          </td>
-
-          <!-- <td>{{ item.joined }}</td> -->
-          <!-- <td>{{ item.admins }}</td> -->
-          <td class="flex">
-            <v-btn variant="text" icon="mdi-pen" title="Edit"></v-btn>
-            <v-btn color="red" @click="confirmAlert(`Are you sure you want to delete institution ${item.abbrev}?`)"
-              variant="text" icon="mdi-delete" title="View"></v-btn>
           </td>
         </tr>
       </tbody>

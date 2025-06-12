@@ -41,7 +41,7 @@
       <tbody>
         <tr class="text-[15px] lg:text-lg" v-for="item in filteredCitizens" :key="item.citizenId">
           <td class="font-semibold text-gray-700">
-    {{ item.citizenId || '-' }}
+            {{ item.citizenId || '-' }}
           </td>
           <td  v-if="getState('role')=='rita'" class="font-semibold text-gray-700">
             TZ-{{ item.birthCertificateNo || '-' }}
@@ -53,7 +53,6 @@
           <td>
             {{ item.gender }}
           </td>
-          <!-- <td>{{ item.district }},&nbsp;{{ item.region }}</td> -->
           <td class="tracking-wide">
             <div v-if="item.citizenStatus" class="flex gap-2">
               <v-icon class="bg-green-700" icon="mdi-check" color="white"></v-icon>
@@ -64,12 +63,9 @@
               <div class="text-red-700">DECEASED</div>
             </div>
           </td>
-          <!-- <td>{{ item.last_updated }}</td> -->
           <td v-if="getState('role')=='rita' || getState('role')=='nida'" class="flex">
-            <v-btn v-if="getState('role')=='rita'" @click="editCitizen(item)" :color="props.themeColor || 'primary'" variant="text" icon="mdi-pen"
-              title="Edit"></v-btn>
 
-            <v-btn v-else @click="issueCitizenId(item)" :color="props.themeColor || 'primary'" variant="text" icon="mdi-certificate-outline"
+            <v-btn v-if="getState('role')=='nida'" @click="issueCitizenId(item)" :color="props.themeColor || 'primary'" variant="text" icon="mdi-certificate-outline"
               title="Issue Citizen Id"></v-btn>
 
             <v-btn v-if="item.citizenStatus && route.path == '/rita-interface'" @click="certifyDeath(item)"

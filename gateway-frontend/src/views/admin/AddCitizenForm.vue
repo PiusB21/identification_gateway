@@ -18,13 +18,11 @@
         </v-text-field>
       </div>
       <div class="grid grid-cols-2 gap-2">
-        <v-date-input v-model="formData.dob" label="Date of birth" variant="outlined"></v-date-input>
+        <v-date-input  :max="today" v-model="formData.dob" label="Date of birth" variant="outlined"></v-date-input>
 
         <v-radio-group label="Gender" v-model="formData.gender" inline>
-
           <v-radio value="Male" label="Male"></v-radio>
           <v-radio value="Female" label="Female"></v-radio>
-
         </v-radio-group>
         <!-- <v-text-field v-model="formData.district" variant="outlined" label="Gender" :color="props.themeColor"
           @focus="focused[4] = true" @blur="focused[4] = false">
@@ -44,6 +42,7 @@ import { onMounted, ref, defineEmits } from 'vue'
 import { getSignerContract } from '@/utils/contractService'
 import {useGatewayStore} from "@/stores/gateway.js"
 
+const today = new Date().toISOString().split('T')[0]
 const store = useGatewayStore()
 const focused = ref([])
 const emit = defineEmits(['close'])

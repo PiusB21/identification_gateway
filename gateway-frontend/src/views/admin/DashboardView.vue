@@ -16,7 +16,7 @@ import { Bar } from 'vue-chartjs'
 import { onMounted,computed,ref } from 'vue'
 import {useGatewayStore} from "@/stores/gateway.js"
 import Loader from "@/components/Loader.vue"
-import { getDate } from '@/utils/contractService'
+import { getDate, countTimestampsByWeekday } from '@/utils/contractService'
 
 const store = useGatewayStore()
 
@@ -35,18 +35,18 @@ Chart.register(
   Legend,
 )
 
-const data = {
+const data = ref({
   labels: ['Mon', 'Tue', 'Wed', 'Thur', 'Fri', 'Sat', 'Sun'],
   datasets: [
     {
-      label: 'Requests',
-      data: [40, 20, 12, 30, 40, 20, 12],
+      label: 'Number of Actions',
+      data: [],
       backgroundColor: ['rgb(24, 103, 192,0.9)'],
       borderColor: ['rgb(24, 103, 192)'],
       borderWidth: 1,
     },
   ],
-}
+})
 
 const options = {
   responsive: true,
@@ -57,10 +57,15 @@ const citizens = computed(()=>store.state.citizens)
 const logs = computed(()=>store.state.logs)
 
 
+
+
+
 const getInstitutionName = (address)=>{
   if(address=='0x7cE5Dc33aF6aC085df443252d8a17AC1AC4E9a97') return 'admin'
   return institutions.value.find(inst=>inst.orgAddress==address).abbreviation
 }
+
+const chartRef = ref(0)
 
 onMounted(async()=>{  
   
@@ -71,6 +76,13 @@ onMounted(async()=>{
     await store.getInstitutions()
     await store.getLogs()
 
+    const timestamps = logs.value.map( log => log.timestamp)    
+    const counts = countTimestampsByWeekday(timestamps)
+
+    data.value.datasets[0].data = counts
+    
+    chartRef.value++
+    
     store.toggleLoading(false)
   }
 })
@@ -131,8 +143,9 @@ onMounted(async()=>{
       </div>
       <div class="grid grid-cols-5 gap-2">
         <div class="col-span-3 border border-gray-600 px-6 py-6 rounded bg-white max-h-fit">
-          <div class="text-gray-900 text-lg">API Requests (Last 7 days)</div>
-          <Bar :data="data" :options="options" />
+          <div class="text-gray-900 text-lg">Write Actions(This Week)</div>
+          <Loader v-if="isLoading" class=" w-[50%] flex items-center justify-center h-70" :color="'stroke-blue-600'" />
+          <Bar v-else :data="data" :options="options" />
         </div>
         <div class="col-span-2 border border-gray-600 px-6 py-6 rounded bg-white">
           <div class="text-gray-900 text-lg">Recent Activity</div>

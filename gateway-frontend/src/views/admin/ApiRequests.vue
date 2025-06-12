@@ -8,31 +8,9 @@
     </div>
 
     <div class="flex flex-col w-full md:w-[90%] rounded gap-2">
-
       <div class="grid grid-cols-3 gap-8">
-        <div class="flex flex-row gap-8 bg-gray-200 w-fit px-2 py-2 rounded h-fit">
-          <div @click="switchInst('all')" :class="status.all ? 'bg-white px-1 rounded shadow' : ''"
-            class="cursor-pointer transition-all duration-200 ease-in">
-            All Requests
-          </div>
-          <div @click="switchInst('successful')" :class="status.successful ? 'bg-white px-1 rounded shadow' : ''"
-            class="cursor-pointer transition-all duration-200 ease-in">
-            Successful
-          </div>
-          <div @click="switchInst('failed')" :class="status.failed ? 'bg-white px-1 rounded shadow' : ''"
-            class="cursor-pointer transition-all duration-200 ease-in">
-            Failed
-          </div>
-          <div @click="switchInst('unauthorized')"
-            :class="status.unauthorized ? 'bg-white px-1 rounded shadow' : ''"
-            class="cursor-pointer transition-all duration-200 ease-in">
-            Unauthorized
-          </div>
-        </div>
-        <v-autocomplete cols="4" density="compact" label="All Institutions" :items="['NIDA', 'NHIF', 'RITA']"
-          variant="outlined"></v-autocomplete>
-        <!-- <v-select label="All Methods" :items="['GET', 'POST', 'PUT', 'DELETE']" variant="outlined"></v-select> -->
-        <v-select label="Day(s)" :items="['Today', 'Past week', 'Past Month']" variant="outlined"></v-select>
+        <v-select  density="compact" v-model="search" label="Institutions" :items="['All','NIDA', 'NHIF', 'RITA']"
+        variant="outlined"></v-select>
       </div>
     </div>
 
@@ -48,7 +26,7 @@
       </thead>
       <Loader class=" w-full absolute flex items-center justify-center" v-if="isLoading" :color="'stroke-blue-600'" />
       <tbody>
-        <tr class="text-[15px] lg:text-lg" v-for="(item, index) in restructuredLogs" :key="index">
+        <tr class="text-[15px] lg:text-lg" v-for="(item, index) in filteredLogs" :key="index">
           <td>
             <div class="flex flex-col gap-[0.5] text-[13px] justify-center font-sans">
               <div class="">{{ item.name }}</div>
@@ -66,8 +44,6 @@
             ]">
               <v-icon v-if="item.status" variant="outlined" icon="mdi-check"></v-icon>
               <v-icon v-else variant="outlined" icon="mdi-close"></v-icon>
-              <!-- <v-icon v-if="item.status == 'unauthorized'" variant="outlined" icon="mdi-exclamation"></v-icon> -->
-
               {{ item.status ? 'Successful' : 'Failed' }}
             </div>
           </td>
@@ -80,7 +56,7 @@
 </template>
 
 <script setup>
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { getDate, getViewerContract } from '@/utils/contractService'
 import Loader from '@/components/Loader.vue'
 import {useGatewayStore} from "@/stores/gateway.js"
@@ -90,11 +66,25 @@ const isLoading = ref(false)
 const logs = computed(()=>store.state.logs)
 const restructuredLogs = ref([])
 const institutions = computed(()=>store.state.institutions)
+const filteredLogs = ref([])
+const search = ref('All')
 
 const getInstitutionName = (address)=>{
   if(address=='0x7cE5Dc33aF6aC085df443252d8a17AC1AC4E9a97') return 'admin'
   return institutions.value.find(inst=>inst.orgAddress==address)?.abbreviation
 }
+
+
+
+watch(search,()=>{
+  if(search.value=='All'){
+    filteredLogs.value = restructuredLogs.value
+  }
+  filteredLogs.value = restructuredLogs.value.filter(log=>{
+    return log.name.toLowerCase()==search.value.toLowerCase()
+  })
+})
+
 
 onMounted(async() => {
 
@@ -109,6 +99,8 @@ onMounted(async() => {
       return {...log,name:getInstitutionName(log.performedBy)}
   })
 
+  filteredLogs.value = restructuredLogs.value
+
   isLoading.value = false
 })
 
@@ -118,18 +110,5 @@ const status = ref({
   failed: false,
   unauthorized: false,
 })
-
-const switchInst = (stat) => {
-  (status.value.all = false),
-  (status.value.successful = false),
-  (status.value.failed = false),
-  (status.value.unauthorized = false)
-
-  if (stat == 'all') status.value.all = true
-  if (stat == 'successful') status.value.successful = true
-  if (stat == 'failed') status.value.failed = true
-  if (stat == 'unauthorized') status.value.unauthorized = true
-}
-
 
 </script>
