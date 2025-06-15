@@ -78,36 +78,39 @@ contract IdentityGateway {
     }
 
     //ADDING INSTITUTION
-   function addInstitution(
-    string memory _instutionName,
-    address _orgAddress,
-    string memory _orgType,
-    string memory _abbreviation
-) public {
-    Institution memory newOrg = Institution({
-        instutionName: _instutionName,
-        abbreviation: _abbreviation,
-        orgType: _orgType,
-        orgAddress: _orgAddress
-    });
+    function addInstitution(
+        string memory _instutionName,
+        address _orgAddress,
+        string memory _orgType,
+        string memory _abbreviation
+    ) public onlyOwner {
+        Institution memory newOrg = Institution({
+            instutionName: _instutionName,
+            abbreviation: _abbreviation,
+            orgType: _orgType,
+            orgAddress: _orgAddress
+        });
 
-    institutionArray.push(newOrg);
-    institutionMapping[_abbreviation] = newOrg;
-    institutionAddressMapping[_orgAddress] = newOrg;
+        institutionArray.push(newOrg);
+        institutionMapping[_abbreviation] = newOrg;
+        institutionAddressMapping[_orgAddress] = newOrg;
 
-    addTransaction("Added Institution", msg.sender);
-}
+        addTransaction("Added Institution", msg.sender);
+    }
 
-    function issueCitizenId(string memory _birthCertificateNo, string memory _citizenId) public {
-    // Update in mapping
-    citizenMapping[_birthCertificateNo].citizenId = _citizenId;
+    function issueCitizenId(
+        string memory _birthCertificateNo,
+        string memory _citizenId
+    ) public onlyNIDA {
+        // Update in mapping
+        citizenMapping[_birthCertificateNo].citizenId = _citizenId;
 
-    // Efficient update in array using index mapping
-    uint256 index = citizenIndexMapping[_birthCertificateNo];
-    citizenArray[index].citizenId = _citizenId;
+        // Efficient update in array using index mapping
+        uint256 index = citizenIndexMapping[_birthCertificateNo];
+        citizenArray[index].citizenId = _citizenId;
 
-    addTransaction("Issued Citizen ID", msg.sender);
-}
+        addTransaction("Issued Citizen ID", msg.sender);
+    }
 
     //ADDING OPERATORS TO OPERATOR ARRAY
     function addOperator(
@@ -116,7 +119,7 @@ contract IdentityGateway {
         address _operatorAddress,
         string memory _position,
         string memory _organisation
-    ) public {
+    ) public onlyOwner{
         Operator memory newOperator = Operator({
             firstName: _firstName,
             lastName: _lastName,
@@ -143,7 +146,7 @@ contract IdentityGateway {
         string memory _lastName,
         string memory _gender,
         string memory _dateofBirth
-    ) public {
+    ) public  onlyRITA{
         Citizen memory newCitizen = Citizen({
             firstName: _firstName, //citizen name
             middleName: _middleName,
@@ -167,7 +170,7 @@ contract IdentityGateway {
         string memory _dateofDeath,
         address _registerBY,
         string memory _citizenID
-    ) public {
+    ) public onlyRITA {
         DeathCertificate memory newDeath = DeathCertificate({
             causeOfDeath: _causeOfDeath,
             dateofDeath: _dateofDeath,
@@ -194,18 +197,20 @@ contract IdentityGateway {
         transactionsArray.push(newTransaction);
     }
 
-    function issueBima(string memory _birthCertificateNo, string memory _healthInsuarance) internal  {
-       // Update in mapping
-    citizenMapping[_birthCertificateNo].healthInsuarance = _healthInsuarance;
+    function issueBima(
+        string memory _birthCertificateNo,
+        string memory _healthInsuarance
+    ) public onlyNHIF {
+        // Update in mapping
+        citizenMapping[_birthCertificateNo]
+            .healthInsuarance = _healthInsuarance;
 
-    // Efficient update in array using index mapping
-    uint256 index = citizenIndexMapping[_birthCertificateNo];
-    citizenArray[index].healthInsuarance = _healthInsuarance;
+        // Efficient update in array using index mapping
+        uint256 index = citizenIndexMapping[_birthCertificateNo];
+        citizenArray[index].healthInsuarance = _healthInsuarance;
 
-    addTransaction("Issued Bima", msg.sender);
+        addTransaction("Issued Bima", msg.sender);
     }
-
-
 
     // Find the index of the user in the usersArray
     function findUserIndex(string memory _citizenId)
@@ -224,27 +229,55 @@ contract IdentityGateway {
         revert("User not found");
     }
 
-   function checkHealthInsuranceStatusByNumber(string memory _healthInsuranceNumber) public view returns (bool) {
-    for (uint256 i = 0; i < citizenArray.length; i++) {
-        if (keccak256(bytes(citizenArray[i].healthInsuarance)) == keccak256(bytes(_healthInsuranceNumber))) {
-            if (citizenArray[i].citizenStatus) {
-                return true;
-            } else {
-                return false;
+    function checkHealthInsuranceStatusByNumber(
+        string memory _healthInsuranceNumber
+    )  public onlyNHIF view returns (bool)  {
+        for (uint256 i = 0; i < citizenArray.length; i++) {
+            if (
+                keccak256(bytes(citizenArray[i].healthInsuarance)) ==
+                keccak256(bytes(_healthInsuranceNumber))
+            ) {
+                if (citizenArray[i].citizenStatus) {
+                    return true;
+                } else {
+                    return false;
+                }
             }
         }
+        revert("Health insurance number not found");
     }
-    revert("Health insurance number not found");
-}
 
+    function revokeHealthInsurance(string memory _healthInsuranceNumber)
+        public onlyNHIF
+    {
+        bool found = false;
 
-    
+        for (uint256 i = 0; i < citizenArray.length; i++) {
+            if (
+                keccak256(bytes(citizenArray[i].healthInsuarance)) ==
+                keccak256(bytes(_healthInsuranceNumber))
+            ) {
+                // Clear health insurance
+                citizenArray[i].healthInsuarance = "";
+
+                // Also clear in mapping using birthCertificateNo
+                string memory birthCert = citizenArray[i].birthCertificateNo;
+                citizenMapping[birthCert].healthInsuarance = "";
+
+                addTransaction("Revoked Health Insurance", msg.sender);
+                found = true;
+                break;
+            }
+        }
+
+        require(found, "Health insurance number not found");
+    }
 
     // Announce the death of a citizen (set their status to false)
-    function announceDeath(string memory _citizenId) public {
+    function announceDeath(string memory _citizenId) public onlyRITA {
         uint256 index = findUserIndex(_citizenId);
         citizenArray[index].citizenStatus = false;
-    }
+    } 
 
     // Check if a citizen is alive (true) or dead (false)
     function isCitizenAlive(string memory _citizenId)
@@ -261,11 +294,18 @@ contract IdentityGateway {
     }
 
     //get institution name
-    function getInstitutionNameByAddress(address _orgAddress) public view returns (string memory) {
-    require(bytes(institutionAddressMapping[_orgAddress].instutionName).length > 0, "Institution not found");
-    return institutionAddressMapping[_orgAddress].instutionName;
-}
-
+    function getInstitutionNameByAddress(address _orgAddress)
+        public
+        view
+        returns (string memory)
+    {
+        require(
+            bytes(institutionAddressMapping[_orgAddress].instutionName).length >
+                0,
+            "Institution not found"
+        );
+        return institutionAddressMapping[_orgAddress].instutionName;
+    }
 
     //get particular citizen data
     function getCitizenData(string memory _birthCertificateNo)
@@ -290,5 +330,37 @@ contract IdentityGateway {
 
     function Login(address _userAddress) public view returns (string memory) {
         return operatorMapping[_userAddress].organisation;
+    }
+
+    modifier onlyNIDA() {
+        require(
+            keccak256(bytes(operatorMapping[msg.sender].organisation)) ==
+                keccak256("NIDA"),
+            "Only NIDA operators can call this function"
+        );
+        _;
+    }
+
+    modifier onlyRITA() {
+        require(
+            keccak256(bytes(operatorMapping[msg.sender].organisation)) ==
+                keccak256("RITA"),
+            "Only RITA operators can call this function"
+        );
+        _;
+    }
+
+    modifier onlyNHIF() {
+        require(
+            keccak256(bytes(operatorMapping[msg.sender].organisation)) ==
+                keccak256("NHIF"),
+            "Only NHIF operators can call this function"
+        );
+        _;
+    }
+
+    modifier onlyOwner() {
+        require(msg.sender == _contractOwner, "Only contract owner");
+        _;
     }
 }
