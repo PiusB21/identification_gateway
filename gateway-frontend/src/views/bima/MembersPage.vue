@@ -35,7 +35,7 @@
           <th class="text-left text-nowrap">Date of Birth</th>
           <th class="text-left">Gender</th>
           <th class="text-left">Life Status</th>
-          <th v-if="getState('role')=='rita' || getState('role')=='nida'" class="text-left">Actions</th>
+          <th class="text-left">Actions</th>
         </tr>
       </thead>
       <Loader class=" w-full absolute flex items-center justify-center" v-if="isLoading" :color="'stroke-[var(--nhif)]'" />
@@ -66,14 +66,10 @@
               <div class="text-red-700">DECEASED</div>
             </div>
           </td>
-          <td v-if="getState('role')=='rita' || getState('role')=='nida'" class="flex">
-
-            <v-btn v-if="getState('role')=='nida'" @click="issueCitizenId(item)" :color="props.themeColor || 'primary'" variant="text" icon="mdi-certificate-outline"
-              title="Issue Citizen Id"></v-btn>
-
-            <v-btn v-if="item.citizenStatus && route.path == '/rita-interface'" @click="certifyDeath(item)"
+          <td class="flex">
+            <v-btn v-if="item.healthInsuarance" @click="revokeInsurance(item)"
               :color="'red'" variant="text" icon="mdi-certificate-outline"
-              title="Issue Death Certificate"></v-btn>
+              title="Revoke Insurance"></v-btn>
           </td>
         </tr>
       </tbody>
@@ -109,14 +105,11 @@ const props = defineProps(['themeColor'])
 
 const editedCitizen = ref(null)
 
-const editCitizen = (citizen) => {
-  editedCitizen.value = citizen
-  add_overlay.value = true
-}
 
-const issueCitizenId = (citizen)=>{
-    editedCitizen.value = citizen
-    id_overlay.value = true
+const revokeInsurance = async(citizen)=>{
+    const res = await confirmAlert(`You are revoking the Insurance for \n ${citizen.firstName} ${citizen.lastName} \n National Id : ${citizen.citizenId}`)
+    if(res.isConfirmed)
+    await store.revokeInsurance(citizen.healthInsuarance)
 }
 
 const certifyDeath = (citizen)=>{

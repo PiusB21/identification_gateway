@@ -60,8 +60,8 @@
             :class="citizenData.healthInsuarance?' text-green-700':' text-red-700'"
             class="w-fit py-1 rounded-md font-semibold font-sans">{{citizenData.healthInsuarance? citizenData.healthInsuarance : 'Has No Insurance'}}</div>
 
-            <v-btn :loading="isIssuing" @click="issueInsurance()" v-if="!citizenData.healthInsuarance" class=" ml-auto text-white" color="var(--nhif)" variant="flat">ISSUE INSURANCE</v-btn>
-            <v-btn :loading="isIssuing" v-else @click="revokeInsurance()" class=" ml-auto text-white" color="red" variant="flat">REVOKE INSURANCE</v-btn>   
+            <v-btn :loading="isIssuing" @click="issueInsurance()" v-if="!citizenData.healthInsuarance && citizenData.citizenStatus" class=" ml-auto text-white" color="var(--nhif)" variant="flat">ISSUE INSURANCE</v-btn>
+            <v-btn :loading="isIssuing" v-else-if="citizenData.healthInsuarance" @click="revokeInsurance()" class=" ml-auto text-white" color="red" variant="flat">REVOKE INSURANCE</v-btn>   
           </div>
         </div>
         
