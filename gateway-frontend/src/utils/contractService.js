@@ -4,7 +4,7 @@ import router from '@/router'
 import { notifyError, notifySuccess } from './notificationService'
 
 //CONTRACT AND WALLET RELATED
-const contractAddress = '0x617bc20Ae80E555c8eC40e4beb5CaDae9171160e'
+const contractAddress = '0x4572a92AA8048C1fDCFB6C5Dd66594f8Dd05d86d'
 const INFURA_API_KEY = '39274895cec54a43bc080c087a46ce9e'
 
 export const getProvider = () => {
@@ -64,9 +64,11 @@ export const login = async () => {
     setState('signer', signerAddress)
     setState('role', 'admin')
     router.push('/dashboard')
-
     return
   }
+
+  console.log('userType : ', userType);
+  
 
   if (userType === null) {
     notifyError('Unauthorized User')

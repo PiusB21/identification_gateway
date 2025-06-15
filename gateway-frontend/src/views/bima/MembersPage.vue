@@ -10,34 +10,35 @@
   </v-overlay>
   <section :class="route.path == '/citizen-data' ? 'bg-[var(--sec)]' : ''"
     class="h-full flex flex-col items-center gap-4 pb-20">
-    <div class="flex justify-between w-full md:w-[90%] py-8 rounded">
+    <div class="flex justify-between w-full py-8 rounded">
       <div class="flex flex-col">
-        <div class="text-2xl">Citizen Data</div>
-        <div class="text-gray-500 text-[13px]">Search and manage citizen information</div>
+        <div class="text-2xl">Insurance Members</div>
+        <div class="text-gray-500 text-[13px]">Search and manage insurance members</div>
       </div>
-      <v-btn v-if="getState('role')=='rita'"  @click="editedCitizen=null;add_overlay = true" flat :color="props.themeColor || 'primary'" prepend-icon="mdi-account-plus">
-        ADD CITIZEN
+      <v-btn  @click="editedCitizen=null;add_overlay = true" flat color="rgb(125, 73, 12)" prepend-icon="mdi-account-plus">
+        ADD MEMBER
       </v-btn>
     </div>
 
-    <div class="flex flex-col w-full md:w-[90%] rounded gap-2">
+    <div class="flex flex-col w-full rounded gap-2">
       <v-text-field v-model="search" label="Search by name, ID number, or other details..." prepend-inner-icon="mdi-magnify"
         variant="outlined"></v-text-field>
     </div>
 
-    <v-table height="80%" fixed-header class="md:w-[90%] rounded border min-h-[300px]">
+    <v-table height="80%" fixed-header class="w-full rounded border min-h-[300px]">
       <thead>
-        <tr class="text-lg font-bold" :class="props.themeColor ? `text-[${props.themeColor}]` : 'text-primary'">
+        <tr class="text-lg font-bold text-[var(--nhif)]">
           <th class="text-left">National ID</th>
           <th v-if="getState('role')=='rita'" class="text-left">Birth Cert Id</th>
+          <th class="text-left">Insurance No</th>
           <th class="text-left">Name</th>
-          <th class="text-left">Date of Birth</th>
+          <th class="text-left text-nowrap">Date of Birth</th>
           <th class="text-left">Gender</th>
           <th class="text-left">Life Status</th>
           <th v-if="getState('role')=='rita' || getState('role')=='nida'" class="text-left">Actions</th>
         </tr>
       </thead>
-      <Loader class=" w-full absolute flex items-center justify-center" v-if="isLoading" :color="'stroke-blue-600'" />
+      <Loader class=" w-full absolute flex items-center justify-center" v-if="isLoading" :color="'stroke-[var(--nhif)]'" />
       <tbody>
         <tr class="text-[15px] lg:text-lg" v-for="item in filteredCitizens" :key="item.citizenId">
           <td class="font-semibold text-gray-700">
@@ -46,6 +47,8 @@
           <td  v-if="getState('role')=='rita'" class="font-semibold text-gray-700">
             TZ-{{ item.birthCertificateNo || '-' }}
           </td>
+          <td>{{ item.healthInsuarance }}</td>
+
           <td>{{ item.firstName }}&nbsp;{{ item.lastName }}</td>
           <td>
             {{ formatDate(item.dateofBirth) }}
@@ -65,10 +68,10 @@
           </td>
           <td v-if="getState('role')=='rita' || getState('role')=='nida'" class="flex">
 
-            <v-btn v-if="getState('role')=='nida' && !item.citizenId" @click="issueCitizenId(item)" :color="props.themeColor || 'primary'" variant="text" icon="mdi-certificate-outline"
+            <v-btn v-if="getState('role')=='nida'" @click="issueCitizenId(item)" :color="props.themeColor || 'primary'" variant="text" icon="mdi-certificate-outline"
               title="Issue Citizen Id"></v-btn>
 
-            <v-btn v-if="item.citizenStatus && route.path == '/rita-interface' && item.citizenId" @click="certifyDeath(item)"
+            <v-btn v-if="item.citizenStatus && route.path == '/rita-interface'" @click="certifyDeath(item)"
               :color="'red'" variant="text" icon="mdi-certificate-outline"
               title="Issue Death Certificate"></v-btn>
           </td>
@@ -81,7 +84,7 @@
 <script setup>
 import { onMounted, ref,computed,watch } from 'vue'
 import { useRoute } from 'vue-router'
-import AddCitizenForm from './AddCitizenForm.vue'
+import AddCitizenForm from './AddCitizenToInsurance.vue'
 import { confirmAlert } from '@/utils/notificationService'
 import { getViewerContract,getState } from '@/utils/contractService'
 import Loader from '@/components/Loader.vue'
@@ -96,7 +99,8 @@ const issue_overlay = ref(false)
 const id_overlay = ref(false)
 const search = ref('')
 
-const citizens = computed(()=>store.state.citizens)
+const citizens = computed(()=>store.state.citizens.filter(citizen=>citizen.healthInsuarance)) 
+
 const filteredCitizens = ref([])
 
 const route = useRoute()

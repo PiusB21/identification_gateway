@@ -33,7 +33,7 @@
 
 
       <div class="py-4 w-full grid grid-cols-2 gap-5">
-        <v-text-field v-model="formData.citizenId" variant="outlined" label="Citizen ID Number" :color="props.themeColor"
+        <v-text-field readonly v-model="formData.citizenId" variant="outlined" label="Citizen ID Number" :color="props.themeColor"
           @focus="focused[2] = true" @blur="focused[2] = false">
         </v-text-field>
         <v-btn :variant="formData.citizenId?'flat':'outlined'" :loading="isLoading" @click="registerCitizen()" :color="props.themeColor || 'primary'" size="x-large">{{ !formData.citizenId?'GENERATE CITIZEN ID':'ISSUE CITIZEN iD' }}</v-btn>

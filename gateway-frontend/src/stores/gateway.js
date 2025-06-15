@@ -26,6 +26,16 @@ export const useGatewayStore = defineStore('gateway', () => {
     setTimeout(()=>getCitizens(),3000)
   }
 
+  const issueInsurance = async (birthCertificateNo, healthInsurance)=>{
+    const { contract } = await getSignerContract()
+    await contract.issueBima(birthCertificateNo, healthInsurance);
+  }
+
+  const revokeInsurance = async (healthInsurance)=>{
+    const { contract } = await getSignerContract()
+    await contract.revokeHealthInsurance(healthInsurance);
+  }
+
   const getInstitutions = async ()=>{
     const { contract } = await getViewerContract()
     state.institutions = await contract.getAllInstitution()
@@ -63,6 +73,8 @@ export const useGatewayStore = defineStore('gateway', () => {
 
   return { 
     state,
+    issueInsurance,
+    revokeInsurance,
     getInstitutions,
     getCitizens,
     getLogs,

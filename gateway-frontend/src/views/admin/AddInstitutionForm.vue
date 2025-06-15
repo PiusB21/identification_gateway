@@ -66,7 +66,7 @@ const convertToDateObject = (dateString) => {
 
 const registerInstitution = async () => {
   isLoading.value = true
-  await store.addInstitution(instData.value.name, instData.value.address, instData.value.instType, instData.value.abbrev);
+  await store.addInstitution(instData.value.name, instData.value.address, instData.value.instType, instData.value.abbrev.toUpperCase());
   isLoading.value = false
   emit('close')
 }
