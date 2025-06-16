@@ -29,7 +29,8 @@
       <thead>
         <tr class="text-lg font-bold" :class="props.themeColor ? `text-[${props.themeColor}]` : 'text-primary'">
           <th class="text-left">National ID</th>
-          <th v-if="getState('role')=='rita'" class="text-left">Birth Cert Id</th>
+          <th class="text-left">Birth Cert Id</th>
+          <th>NHIF Id</th>
           <th class="text-left">Name</th>
           <th class="text-left">Date of Birth</th>
           <th class="text-left">Gender</th>
@@ -43,8 +44,11 @@
           <td class="font-semibold text-gray-700">
             {{ item.citizenId || '-' }}
           </td>
-          <td  v-if="getState('role')=='rita'" class="font-semibold text-gray-700">
+          <td class="font-semibold text-gray-700">
             TZ-{{ item.birthCertificateNo || '-' }}
+          </td>
+          <td>
+            {{ item.healthInsuarance || '-' }}
           </td>
           <td>{{ item.firstName }}&nbsp;{{ item.lastName }}</td>
           <td>

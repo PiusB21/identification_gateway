@@ -8,27 +8,27 @@
       Register Institution
     </div>
 
-    <v-form class="flex flex-col gap-4 z-10">
+    <v-form @submit.prevent="registerInstitution()" class="flex flex-col gap-4 z-10">
       <div class="grid grid-cols-3 gap-2">
-        <v-text-field class="col-span-2" v-model="instData.name" variant="outlined" label="Institution Name"
+        <v-text-field required class="col-span-2" v-model="instData.name" variant="outlined" label="Institution Name"
           :color="props.themeColor" @focus="focused[3] = true" @blur="focused[3] = false">
         </v-text-field>
 
 
-        <v-text-field v-model="instData.abbrev" variant="outlined" label="Abbreviation" :color="props.themeColor"
+        <v-text-field required v-model="instData.abbrev" variant="outlined" label="Abbreviation" :color="props.themeColor"
           @focus="focused[3] = true" @blur="focused[3] = false">
         </v-text-field>
       </div>
-      <v-text-field v-model="instData.address" variant="outlined" label="Institution Address" :color="props.themeColor"
+      <v-text-field required v-model="instData.address" variant="outlined" label="Institution Address" :color="props.themeColor"
         @focus="focused[3] = true" @blur="focused[3] = false">
       </v-text-field>
 
 
-      <v-select v-model="instData.instType" label="Type" :items="['Government', 'Private']"
+      <v-select required v-model="instData.instType" label="Type" :items="['Government', 'Private']"
         variant="outlined"></v-select>
 
       <div class="py-4 w-full">
-        <v-btn @click="registerInstitution()" :color="props.themeColor || 'primary'" width="100%"
+        <v-btn type="submit" :color="props.themeColor || 'primary'" width="100%"
           :loading="isLoading">Add</v-btn>
       </div>
     </v-form>
